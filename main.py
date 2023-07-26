@@ -16,7 +16,7 @@ class Main:
     
         
     def projects(args):
-        """Return the list of projects"""
+        """Return the list of projects and Next Action"""
         Filesystem( args[2], 
                    CSV (
                        datetime.now(), 
@@ -26,6 +26,7 @@ class Main:
         
         
     if __name__ == '__main__':
+        """Run elaboration"""
         logging.basicConfig(level=logging.DEBUG)
         logging.debug('Begin')
         args = sys.argv

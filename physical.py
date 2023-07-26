@@ -6,46 +6,56 @@ Created on Thu Apr 27 14:44:50 2023
 """
 """TODO cambiare nome da physical in input o read"""
 
-from projects import XML
 import logging
-
+from parser_xml import MyHandler
 import os
 
 
 class Directory:
-    """ directory to read"""
+    """ 
+    Class of the directory to read
+    """
     def __init__(self, new_complete_path):
         self.complete_path = new_complete_path
     
-        
     def xml(self):
-        """return the list of XML files"""
-        lista = []
+        """Return the list of XML files inside"""
+        projectList = []
         for file in os.listdir(self.complete_path):
             if file.endswith(".xml"):
-                lista.append(XML(os.path.join(self.complete_path, file)).project_data())
-        return lista
-    
+                projectList.append(
+                    MyHandler().parse(
+                        os.path.join(
+                            self.complete_path, file
+                            )
+                        )
+                    )
+        logging.debug("Project's list:" + repr(projectList))
+        return projectList
 
 class CSV:
-    
-    """ File to write"""
+    """ 
+    Class about the file to write.
+    """
     def __init__(self, new_date_time_obj, new_list_data):
         self.date_time_obj = new_date_time_obj
         self.list_data_to_print = new_list_data
         
     def row(self):
-        """return the built row: project+next action"""
+        """Return the built row"""
         return  [ x  for x in self.list_data_to_print ]
     
     def name(self):
-        """return the name of the file"""
+        """Return the name of the report file"""
         timestampStr = self.date_time_obj.strftime("%Y-%m-%d")#-%H%M%S-%f
-        return timestampStr + "-PROJECTS.csv"
+        return "-".join([timestampStr, "PROJECTS.csv"])
     
     
 class Filesystem:
-    """write to the disk"""
+    """
+    Class about the filesystem 
+    write to the disk
+    """
     
     def __init__(self, new_path_complete_file, new_csv):
         """or directory and namefile"""
@@ -53,18 +63,22 @@ class Filesystem:
         self.csv = new_csv
             
     def directory(self):
-        """make the directory with complete path if not existing"""
+        """Make the directory with complete path if not existing"""
         if(not os.path.exists(self.path_complete_file) ):
-            logging.debug("make dir : "+ self.path_complete_file)
+            logging.debug( " ".join([ "make dir :", self.path_complete_file]))
             os.mkdir(self.path_complete_file)
-            logging.debug("make: "+ self.path_complete_file)
+            logging.debug(" ".join(["Successfull make: ", self.path_complete_file]))
         return self.path_complete_file
     
     def file(self):
-        """write the physical file in the hard disk"""
-        f = open(self.directory() + os.sep + self.csv.name(), "a")
-        lista = self.csv.row()
-        f.write("\n".join(str(item) for item in lista))
+        """write (updating, if it exists) the physical file in the hard disk"""
+        report_name = "".join([ self.directory(), os.sep, self.csv.name() ]);
+        if (os.path.exists(report_name)) :
+            os.remove(report_name)	
+        f = open(report_name, "a")
+        rowList = self.csv.row()
+        for areas in rowList:
+            for project_next_Action in areas:
+                f.write("".join([repr(project_next_Action), "\n" ]))
         f.close()
         
-        #logging.debug("str: " + (*lista, sep = "\n"))
