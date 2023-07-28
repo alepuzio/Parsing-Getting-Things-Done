@@ -3,6 +3,11 @@
 
 Test Class from module "projects" 
 """
+
+import sys
+
+sys.path.insert(0, '../parsinggettingthingsdone')
+#from parsinggettingthingsdone.projects import Action
 from projects import Action
 
 from projects import Project
