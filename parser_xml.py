@@ -47,7 +47,7 @@ class MyHandler(xml.sax.handler.ContentHandler):
             self.current_project = attrs['name']
             self.list_action = []
             self.priority  = -1
-            self.important = attrs['important']
+            self.important = attrs['important'] if 'important' in tagName else ''
         elif tag_name.isAction():
             self.priority = attrs['number']
         else:
