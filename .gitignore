@@ -161,4 +161,4 @@ cython_debug/
 
 # specific of the project
 resources
-outputfile
+output_file
