@@ -12,6 +12,7 @@ from parsinggettingthingsdone.projects import Action
 
 from parsinggettingthingsdone.projects import Project
 from parsinggettingthingsdone.projects import ImportantProject
+from parsinggettingthingsdone.projects import ClosedProject
 import logging
 
 import pytest
@@ -23,6 +24,9 @@ class TestProject:
     
     @pytest.fixture
     def all_data(self):
+        '''
+        Function to prepare data used by the tests
+        '''
         action_first = Action("first action", 1)
         action_second = Action("second action" , 2)   
         self.list_actions.append(action_first)
@@ -42,7 +46,12 @@ class TestProject:
         logging.debug("ImportantProject: " + str(result))
         assert result == "! " 
 
-
+    def test_project_closed(self, all_data):
+        project_single = ClosedProject(Project("ClosedProject", self.list_actions), "2020-09-08")
+        result = project_single.closed()  
+        logging.debug("ClosedProject at " + str(result))
+        assert result == "2020-09-08" 
+        
     def test_action_isMoreImportantThan(self, all_data):
        res =  self.list_actions[0].isMoreImportantThan(self.list_actions[1])
        assert (True == res)

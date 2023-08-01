@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*
-   
+from datetime import datetime    
 class Project:
     """  Class about a Project,
     declared as a sequence of more steps direct to a goal.
@@ -55,6 +55,21 @@ class ImportantProject:
     def __repr__(self):
         """Return the important Project as string (begin '1') for CSV file"""
         return  "".join([ str(self.isImportant()) , ProjectName(self.name).name(), ";", str(self.nextAction().data()) ])
+
+class ClosedProject:
+    """ Class about the Project with attribute closed = "yyyy-mm-dd".
+    """
+    
+    def __init__(self, new_project, new_completed_date):
+            self.project = new_project
+            self.completed_date = new_completed_date
+    
+    def closed(self):
+        """Return yyyy-mm-dd if the Project is closed"""
+        res = ""
+        if  (None != self.completed_date) :
+           res = datetime.strptime(self.completed_date, '%Y-%m-%d').strftime('%Y-%m-%d')
+        return res  
 
         
 class Action:

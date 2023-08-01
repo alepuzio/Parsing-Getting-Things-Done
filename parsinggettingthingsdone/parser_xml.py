@@ -52,8 +52,10 @@ class MyHandler(xml.sax.handler.ContentHandler):
             self.list_action = []
             self.priority  = -1
             self.important = attrs['important'] if 'important' in tagName else ''
+            self.closed = attrs['closed'] if 'closed' in tagName else ''
         elif tag_name.isAction():
             self.priority = attrs['number'] if 'number' in tagName else '0'
+            self.closed = attrs['closed'] if 'closed' in tagName else ''
         else:
            logging.warn("".join(["Unkown startElement(", tagName ,")"]))
 
