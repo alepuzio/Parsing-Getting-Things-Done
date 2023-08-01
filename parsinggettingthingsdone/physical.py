@@ -60,7 +60,10 @@ class Filesystem:
     """
     
     def __init__(self, new_path_complete_file, new_csv):
-        """or directory and namefile"""
+        """
+        param: new_path_complete_file: directory where wirte the CSV file
+        param: new_csv: CSV filename
+        """
         self.path_complete_file = new_path_complete_file
         self.csv = new_csv
             

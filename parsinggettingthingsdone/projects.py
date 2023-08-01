@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*
    
 class Project:
-    """ 
-    Class about a Project,
+    """  Class about a Project,
     declared as a sequence of more steps direct to a goal.
     """
     def __init__(self, new_name, new_list_actions):
@@ -10,8 +9,7 @@ class Project:
         self.list_actions = new_list_actions
     
     def nextAction(self):
-        """
-        Return
+        """ Return
         ----------
         the Next Actions.           
         """
@@ -40,8 +38,7 @@ class Project:
         return  "".join([ProjectName(self.name).name(), ";", str(self.nextAction().data()) ])
 
 class ImportantProject:
-    """ 
-    Class about the Project with flag 'important'.
+    """ Class about the Project with flag 'important'.
     """
     
     def __init__(self, new_project, new_important):
