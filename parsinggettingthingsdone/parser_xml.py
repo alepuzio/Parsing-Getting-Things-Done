@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
-import xml.sax
-from projects import Project
-from projects import Action
 import logging
+import sys
+import xml.sax
+
+sys.path.insert(0, '../parsinggettingthingsdone')
+
+from parsinggettingthingsdone.projects import Project
+from parsinggettingthingsdone.projects import Action
 
 
 class MyHandler(xml.sax.handler.ContentHandler):

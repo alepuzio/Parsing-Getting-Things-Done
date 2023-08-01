@@ -1,4 +1,4 @@
-import main 
-import parser_xml 
-import physical 
-import projects 
+import parsinggettingthingsdone.main 
+import parsinggettingthingsdone.parser_xml 
+import parsinggettingthingsdone.physical 
+import parsinggettingthingsdone.projects 
