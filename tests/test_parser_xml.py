@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 import unittest
 
+import sys
+
+sys.path.insert(0, '../parsinggettingthingsdone')
 from parser_xml import TagName
 
 class TestParserXML(unittest.TestCase):

@@ -49,14 +49,14 @@ class MyHandler(xml.sax.handler.ContentHandler):
             self.priority  = -1
             self.important = attrs['important'] if 'important' in tagName else ''
         elif tag_name.isAction():
-            self.priority = attrs['number']
+            self.priority = attrs['number'] if 'number' in tagName else '0'
         else:
            logging.warn("".join(["Unkown startElement(", tagName ,")"]))
 
     def endElement(self, tagName):
         """
         Read the '>' character.
-        It means the the current tag si closed
+        It means the the current tag is closed
         """
         tag_name = TagName(tagName)
         if tag_name.isProject() : 
