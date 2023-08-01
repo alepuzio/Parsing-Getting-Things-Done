@@ -14,25 +14,29 @@ from projects import Project
 from projects import ImportantProject
 import logging
 
-import unittest
+import pytest
 
 
-class TestProject(unittest.TestCase):
-
-    def test_nextAction(self):
-        action_first = Action("first action",1)
-        action_second = Action("second action" , 2)
-        list_actions = []
-        list_actions.append(action_first)
-        list_actions.append(action_second)
-        project_single = Project("project", list_actions)
+class TestProject:
+    
+    list_actions = []
+    
+    @pytest.fixture(scope="session")
+    def prepare_data(self)    
+        action_first = Action("first action", 1)
+        action_second = Action("second action" , 2)   
+        self.list_actions.append(action_first)
+        self.list_actions.append(action_second)
+        
+        
+    def test_project_nextAction(self):
+        project_single = Project("project", self.list_actions)
         result = project_single.nextAction()  
         logging.debug("next actions: " + str(result))
-        assert result == action_first
+        self.list_action = []
+        assert result == Action("first action", 1)
     
-class TestImportantProject(unittest.TestCase):
-
-    def test_isImportant(self):
+    def test_project_isImportant(self):
         action_first = Action("first action",1)
         action_second = Action("second action" , 2)
         list_actions = []
@@ -43,9 +47,8 @@ class TestImportantProject(unittest.TestCase):
         logging.debug("ImportantProject: " + str(result))
         assert result == "! " 
 
-class TestAction(unittest.TestCase):
 
-    def test_isMoreImportantThan(self):
+    def test_action_isMoreImportantThan(self):
         action_first = Action("first action",1)
         action_second = Action("second action" , 2)
         res = action_first.isMoreImportantThan(action_second)

@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
-import unittest
+import pytest
 
 import sys
 
 sys.path.insert(0, '../parsinggettingthingsdone')
 from parser_xml import TagName
 
-class TestParserXML(unittest.TestCase):
+class TestParserXML:
     
-    def test_lambda_list(self):
+    def test_parserxml_lambda_list(self):
         jobs = ["engineer","teacher","doctor"]
         for x in range(len(jobs)):
             assert (jobs[x] != "unkown")
@@ -17,20 +17,18 @@ class TestParserXML(unittest.TestCase):
     
 #  def endElement(self, tagName):
 
-class  TestTagName(unittest.TestCase):
-
             
-    def test_isAction(self):
+    def test_tag_name_isAction(self):
         tagName = TagName("action")
         res = tagName.isAction()
         assert True == res
     
-    def test_isProject(self):
+    def test_tag_name_isProject(self):
         tagName = TagName("project")
         res = tagName.isProject()
         assert  True == res
     
-    def test_isEndFile(self):
+    def test_tag_name_isEndFile(self):
         tagName = TagName("projects")
         res = tagName.isEndFile()
         assert  True == res
