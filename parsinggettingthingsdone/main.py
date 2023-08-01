@@ -6,11 +6,12 @@ Created on Wed May  3 12:07:14 2023
 """
 import logging
 import sys
-from datetime import datetime
+sys.path.insert(0, '../parsinggettingthingsdone')
 
-from parsinggettingthingsdone.physical import CSV
-from parsinggettingthingsdone.physical import Directory
-from parsinggettingthingsdone.physical import Filesystem
+from datetime import datetime
+from physical import CSV
+from physical import Directory
+from physical import Filesystem
 
 
 class Main:

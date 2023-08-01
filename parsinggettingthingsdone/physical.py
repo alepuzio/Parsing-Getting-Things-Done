@@ -9,7 +9,7 @@ Created on Thu Apr 27 14:44:50 2023
 import logging
 import os
 
-from parsinggettingthingsdone.parser_xml import MyHandler
+from parser_xml import MyHandler
 
 
 

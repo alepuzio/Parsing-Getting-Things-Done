@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*
 from datetime import datetime    
+
 class Project:
     """  Class about a Project,
     declared as a sequence of more steps direct to a goal.
@@ -77,10 +78,11 @@ class Action:
     Class about a general Single Action.
     """
     
-    def __init__(self, new_name, new_position):
+    def __init__(self, new_name, new_position, new_closed = ''):
         self.name = new_name
         self.position = new_position
-            
+        self.closed = new_closed
+    
         
     def isMoreImportantThan(self, a):
         """

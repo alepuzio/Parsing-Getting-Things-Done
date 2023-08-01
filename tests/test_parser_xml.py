@@ -2,16 +2,12 @@
 import pytest
 
 import sys
-
 sys.path.insert(0, '../parsinggettingthingsdone')
+
 from parsinggettingthingsdone.parser_xml import TagName
 
 class TestParserXML:
     
-    actionTagName = ""
-    projectTagName = ""
-    projectsTagName = ""
-
     def test_parserxml_lambda_list(self):
         jobs = ["engineer","teacher","doctor"]
         for x in range(len(jobs)):
