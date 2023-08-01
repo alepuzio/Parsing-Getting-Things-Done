@@ -17,9 +17,12 @@ class TestParserXML:
         for x in range(len(jobs)):
             assert (jobs[x] != "unkown")
 
-#    def startElement(self, tagName, attrs):
-    
-#  def endElement(self, tagName):
+    @pytest.mark.skip(reason="no way of testing the redading the start of an element")
+    def test_parserxml_startElement(self, data_action):
+        "How to create an Attr with no XML file"
+    @pytest.mark.skip(reason="no way of testing the redading the start of an element")
+    def test_parserxml_endElement(self, tagName):
+        "How to create an Attr with no XML file"
 
     @pytest.fixture
     def data_action(self):
