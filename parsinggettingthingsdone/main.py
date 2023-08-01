@@ -4,12 +4,14 @@ Created on Wed May  3 12:07:14 2023
 
 @author: Alessandro
 """
-import sys
-from physical import Directory
-from physical import CSV
-from physical import Filesystem
-from datetime import datetime
 import logging
+import sys
+from datetime import datetime
+
+from parsinggettingthingsdone.physical import CSV
+from parsinggettingthingsdone.physical import Directory
+from parsinggettingthingsdone.physical import Filesystem
+
 
 class Main:
     """Main class"""

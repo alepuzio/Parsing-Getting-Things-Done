@@ -18,7 +18,7 @@ class Project:
         result = [ x  for x in self.list_actions if x.isNextAction ()]
         numberNA = len(result)
         if (0 == numberNA ) :
-            result.append(Action( " ".join(["The project", ProjectName(self.name).name(), " has not any Action"]), 1))
+            result.append(Action( "This project has not any Action", 1))
         elif (1 < numberNA):
             result = []
             result.append(  Action (" ".join(['Forbitten more than 1 Next Action, there are', str(numberNA) ,'NA']),1))

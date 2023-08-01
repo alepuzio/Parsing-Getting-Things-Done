@@ -7,8 +7,10 @@ Created on Thu Apr 27 14:44:50 2023
 """TODO cambiare nome da physical in input o read"""
 
 import logging
-from parser_xml import MyHandler
 import os
+
+from parsinggettingthingsdone.parser_xml import MyHandler
+
 
 
 class Directory:

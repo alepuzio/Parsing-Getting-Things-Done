@@ -1,36 +1,41 @@
 # -*- coding: utf-8 -*-
-import unittest
+import pytest
 
 import sys
 
 sys.path.insert(0, '../parsinggettingthingsdone')
-from parser_xml import TagName
+from parsinggettingthingsdone.parser_xml import TagName
 
-class TestParserXML(unittest.TestCase):
+class TestParserXML:
     
-    def test_lambda_list(self):
+    actionTagName = ""
+    projectTagName = ""
+    projectsTagName = ""
+
+    def test_parserxml_lambda_list(self):
         jobs = ["engineer","teacher","doctor"]
         for x in range(len(jobs)):
             assert (jobs[x] != "unkown")
 
-#    def startElement(self, tagName, attrs):
-    
-#  def endElement(self, tagName):
+    @pytest.mark.skip(reason="no way of testing the redading the start of an element")
+    def test_parserxml_startElement(self, data_action):
+        "How to create an Attr with no XML file"
+    @pytest.mark.skip(reason="no way of testing the redading the start of an element")
+    def test_parserxml_endElement(self, tagName):
+        "How to create an Attr with no XML file"
 
-class  TestTagName(unittest.TestCase):
+    @pytest.fixture
+    def data_action(self):
+        self.actionTagName = TagName("action")
+        self.projectTagName = TagName("project")
+        self.projectsTagName = TagName("projects")
 
             
-    def test_isAction(self):
-        tagName = TagName("action")
-        res = tagName.isAction()
-        assert True == res
+    def test_tag_name_isAction(self, data_action):
+        assert True == self.actionTagName.isAction()
     
-    def test_isProject(self):
-        tagName = TagName("project")
-        res = tagName.isProject()
-        assert  True == res
+    def test_tag_name_isProject(self, data_action):
+        assert  True == self.projectTagName.isProject()
     
-    def test_isEndFile(self):
-        tagName = TagName("projects")
-        res = tagName.isEndFile()
-        assert  True == res
+    def test_tag_name_isEndFile(self, data_action):
+        assert  True == self.projectsTagName.isEndFile()
