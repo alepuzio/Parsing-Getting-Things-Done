@@ -4,10 +4,14 @@ import pytest
 import sys
 
 sys.path.insert(0, '../parsinggettingthingsdone')
-from parser_xml import TagName
+from parsinggettingthingsdone.parser_xml import TagName
 
 class TestParserXML:
     
+    actionTagName = ""
+    projectTagName = ""
+    projectsTagName = ""
+
     def test_parserxml_lambda_list(self):
         jobs = ["engineer","teacher","doctor"]
         for x in range(len(jobs)):
@@ -17,18 +21,18 @@ class TestParserXML:
     
 #  def endElement(self, tagName):
 
+    @pytest.fixture
+    def data_action(self):
+        self.actionTagName = TagName("action")
+        self.projectTagName = TagName("project")
+        self.projectsTagName = TagName("projects")
+
             
-    def test_tag_name_isAction(self):
-        tagName = TagName("action")
-        res = tagName.isAction()
-        assert True == res
+    def test_tag_name_isAction(self, data_action):
+        assert True == self.actionTagName.isAction()
     
-    def test_tag_name_isProject(self):
-        tagName = TagName("project")
-        res = tagName.isProject()
-        assert  True == res
+    def test_tag_name_isProject(self, data_action):
+        assert  True == self.projectTagName.isProject()
     
-    def test_tag_name_isEndFile(self):
-        tagName = TagName("projects")
-        res = tagName.isEndFile()
-        assert  True == res
+    def test_tag_name_isEndFile(self, data_action):
+        assert  True == self.projectsTagName.isEndFile()
