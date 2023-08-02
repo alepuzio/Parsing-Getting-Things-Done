@@ -49,8 +49,7 @@ class CSV:
     
     def name(self):
         """Return the name of the report file"""
-        timestampStr = self.date_time_obj.strftime("%Y-%m-%d")#-%H%M%S-%f
-        return "-".join([timestampStr, "PROJECTS.csv"])
+        return "-".join([self.date_time_obj.strftime("%Y-%m-%d"), "PROJECTS.csv"])
     
     
 class Filesystem:
@@ -84,6 +83,6 @@ class Filesystem:
         rowList = self.csv.row()
         for areas in rowList:
             for project_next_Action in areas:
-                f.write("".join([repr(project_next_Action), "\n" ]))
+                f.write("".join([(project_next_Action.csv()), "\n" ]))
         f.close()
         
