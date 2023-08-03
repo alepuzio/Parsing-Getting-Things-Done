@@ -50,6 +50,9 @@ class Project:
         return "".join([ self.important_mark(), self.closed_formatted(),  ProjectName(self.name).name()])
     
     def important_mark(self):
+        """
+        Return the string that indicates this project as Important in the CSV row
+        """
         res =  None
         if  (1 == self.important) :
             res = "! "
@@ -58,6 +61,9 @@ class Project:
         return res 
     
     def closed_formatted(self):
+        """
+        Return the optional finish date in the CSV row
+        """
         res =  None
         if "" != self.closed:
             res = datetime.strptime(self.closed, '%Y-%m-%d').strftime('%Y-%m-%d')
