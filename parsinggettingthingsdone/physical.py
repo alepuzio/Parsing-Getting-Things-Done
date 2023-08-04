@@ -32,7 +32,7 @@ class Directory:
                             )
                         )
                     )
-        logging.debug("Project's list:" + repr(projectList))
+        #logging.debug("Project's list:" + repr(projectList))
         return projectList
 
 class CSV:
