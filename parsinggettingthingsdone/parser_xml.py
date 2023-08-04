@@ -5,8 +5,8 @@ import xml.sax
 
 sys.path.insert(0, '../parsinggettingthingsdone')
 
-from parsinggettingthingsdone.projects import Project
-from parsinggettingthingsdone.projects import Action
+from projects import Project
+from projects import Action
 
 
 class MyHandler(xml.sax.handler.ContentHandler):
@@ -16,8 +16,8 @@ class MyHandler(xml.sax.handler.ContentHandler):
     
     def __init__(self):
         """Init method"""
-        self._charBuffer = []
         self.current_project = ""
+        self._charBuffer = []
         self.list_action = []
         self.list_project = []
         self.priority = -1
@@ -39,21 +39,24 @@ class MyHandler(xml.sax.handler.ContentHandler):
 
     def characters(self, data):
         """Read the characters"""
-        self.activity = data
         self._charBuffer.append(data)
-
+        self.activity = data
+        
     def startElement(self, tagName, attrs):
         """Read the '<' character.
         It means the there's a new tag.
         """
+        logging.debug("tagName:"+tagName)
         tag_name = TagName(tagName)
-        if tag_name.isProject():
+        if tag_name.isProject():        
             self.current_project = attrs['name']
             self.list_action = []
             self.priority  = -1
-            self.important = attrs['important'] if 'important' in tagName else ''
+            self.important = attrs['important'] if 'important' in attrs else ''
+            self.closed = attrs['closed'] if 'closed' in attrs else ''
         elif tag_name.isAction():
-            self.priority = attrs['number'] if 'number' in tagName else '0'
+            self.priority = attrs['number'] if 'number' in attrs else '0'
+            self.closed = attrs['closed'] if 'closed' in attrs else ''
         else:
            logging.warn("".join(["Unkown startElement(", tagName ,")"]))
 
@@ -67,18 +70,18 @@ class MyHandler(xml.sax.handler.ContentHandler):
             self.list_project.append(
                 Project(
                     self.current_project, 
+                    self.important,
+                    self.closed,
                     self.list_action
                     )
                 )
-            self.list_action = []
-            logging.debug(" ".join(["isProject:", str(self.list_project)]))
+            #self.list_action = []
         elif tag_name.isAction():
-          self.list_action.append( 
-                Action(   self.activity , str(  self.priority)   )    
-                )
-          logging.debug(" ".join(["action:", str(self.list_project)]))
+          logging.debug("closed " +str(self.closed))
+          self.list_action.append( Action(   str(self.activity ),
+                             self.priority, self.closed) )
         elif tag_name.isEndFile():
-          logging.debug(" ".join(["projects:", str(self.list_project)]))
+          logging.debug(" ".join(["chiudo projects:", str(self.list_project)]))
         
         else:
             logging.warn("".join(["Unkown endElement(", tagName ,")"]))

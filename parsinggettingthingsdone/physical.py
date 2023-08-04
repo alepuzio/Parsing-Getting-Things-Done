@@ -9,7 +9,7 @@ Created on Thu Apr 27 14:44:50 2023
 import logging
 import os
 
-from parsinggettingthingsdone.parser_xml import MyHandler
+from parser_xml import MyHandler
 
 
 
@@ -49,8 +49,7 @@ class CSV:
     
     def name(self):
         """Return the name of the report file"""
-        timestampStr = self.date_time_obj.strftime("%Y-%m-%d")#-%H%M%S-%f
-        return "-".join([timestampStr, "PROJECTS.csv"])
+        return "-".join([self.date_time_obj.strftime("%Y-%m-%d"), "PROJECTS.csv"])
     
     
 class Filesystem:
@@ -81,9 +80,13 @@ class Filesystem:
         if (os.path.exists(report_name)) :
             os.remove(report_name)	
         f = open(report_name, "a")
-        rowList = self.csv.row()
-        for areas in rowList:
-            for project_next_Action in areas:
-                f.write("".join([repr(project_next_Action), "\n" ]))
+        row_list = self.csv.row()
+        if not row_list:
+            f.write(" ".join( ["Every project","has no Next Action","\n"] ))
+        else:
+            f.write(";".join ( ["Project", "NextAction","\n"]) )
+            for areas in row_list:
+                for project_next_Action in areas:
+                    f.write("".join([(project_next_Action.csv()), "\n" ]))
         f.close()
         

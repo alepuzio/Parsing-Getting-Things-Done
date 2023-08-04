@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*
-   
+from datetime import datetime    
+import logging
+
 class Project:
     """  Class about a Project,
     declared as a sequence of more steps direct to a goal.
     """
-    def __init__(self, new_name, new_list_actions):
+    def __init__(self, new_name, new_important , new_closed, new_list_actions):
         self.name = new_name
+        self.important = new_important
+        self.closed = new_closed
         self.list_actions = new_list_actions
     
     def nextAction(self):
@@ -33,39 +37,56 @@ class Project:
         """Return the Next Action as string"""
         return  "".join([ProjectName(self.name).name() , "[" , str(len(self.list_actions)), "]"])
 
-    def __repr__(self):
+    def csv(self):
         """Return the Next Action as string for CSV file"""
-        return  "".join([ProjectName(self.name).name(), ";", str(self.nextAction().data()) ])
+        return  "".join([ self.project_name(), ";", self.data() ])
 
-class ImportantProject:
-    """ Class about the Project with flag 'important'.
-    """
+    def project_name(self):
+        """
+        Return name of the of the Project.
+        - If it's Important there will be a mark
+        - If it's closed there will be the finish date
+        """
+        return "".join([ self.important_mark(), self.closed_formatted(),  ProjectName(self.name).name()])
     
-    def __init__(self, new_project, new_important):
-            self.project = new_project
-            self.important = new_important
-
-    def isImportant(self):
-        """Return True if the Project is important"""
-        res = ""
+    def important_mark(self):
+        """
+        Return the string that indicates this project as Important in the CSV row
+        """
+        res =  None
         if  (1 == self.important) :
-           res = "! " 
-        return res  
-
-    def __repr__(self):
-        """Return the important Project as string (begin '1') for CSV file"""
-        return  "".join([ str(self.isImportant()) , ProjectName(self.name).name(), ";", str(self.nextAction().data()) ])
-
+            res = "! "
+        else:
+            res = ""
+        return res 
+    
+    def closed_formatted(self):
+        """
+        Return the optional finish date in the CSV row
+        """
+        res =  None
+        if "" != self.closed:
+            res = datetime.strptime(self.closed, '%Y-%m-%d').strftime('%Y-%m-%d')
+        else:
+            res = ""
+        return res 
+    
+    def data(self):
+        """
+        Return the data of the Next Action
+        """
+        return str(self.nextAction().data())
         
 class Action:
     """
     Class about a general Single Action.
     """
     
-    def __init__(self, new_name, new_position):
+    def __init__(self, new_name, new_position, new_closed = ''):
         self.name = new_name
         self.position = new_position
-            
+        self.closed = new_closed
+        logging.debug("closed " + str(self.closed))
         
     def isMoreImportantThan(self, a):
         """
@@ -101,7 +122,12 @@ class Action:
     
     def data(self):
         """Return the name with no \r, \t or \n"""
-        return  self.name.replace("\r","").replace("\t","").replace("\n","")
+        data_action = ""
+        if("" != self.closed.replace(" ", "")):
+            data_action = " ".join([self.name, "[", self.closed ,"]"])
+        else:
+            data_action = self.name
+        return data_action.replace("\r","").replace("\t","").replace("\n","")
 
     def __eq__(self, other): 
         """Return True if the Actions have the same name"""
@@ -114,11 +140,11 @@ class Action:
         return res
     
     def __str__(self):
-        return  " ".join([str(self.position), ">>", self.name])
+        return  " ".join([str(self.position), ">", self.name])
     
     def __repr__(self):
         """Return the representation of the Action for the CSV report"""
-        return  " ".join([str(self.position), ">", self.name])
+        return  " ".join([str(self.position),"[", str(self.closed),"]" , ">>", self.name])
         
 class ProjectName:
     """Elaborate the name of the project in natural language"""
