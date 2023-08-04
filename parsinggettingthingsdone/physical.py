@@ -80,9 +80,13 @@ class Filesystem:
         if (os.path.exists(report_name)) :
             os.remove(report_name)	
         f = open(report_name, "a")
-        rowList = self.csv.row()
-        for areas in rowList:
-            for project_next_Action in areas:
-                f.write("".join([(project_next_Action.csv()), "\n" ]))
+        row_list = self.csv.row()
+        if not row_list:
+            f.write(" ".join( ["Every project","has no Next Action","\n"] ))
+        else:
+            f.write(";".join ( ["Project", "NextAction","\n"]) )
+            for areas in row_list:
+                for project_next_Action in areas:
+                    f.write("".join([(project_next_Action.csv()), "\n" ]))
         f.close()
         
