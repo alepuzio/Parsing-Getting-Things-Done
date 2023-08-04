@@ -47,7 +47,7 @@ class TestProject:
         assert result == "! " 
 
     def test_project_closed(self, all_data):
-        project_single = ClosedProject(Project("ClosedProject", self.list_actions), "2020-09-08")
+        project_single = Project(Project("ClosedProject", "","2020-09-08",self.list_actions))
         result = project_single.closed()  
         logging.debug("ClosedProject at " + str(result))
         assert result == "2020-09-08" 

@@ -62,13 +62,11 @@ class Project:
     
     def closed_formatted(self):
         """
-        Return the optional finish date in the CSV row
+        Return the optional finish date in the CSV row in format Y-m-d.
         """
-        res =  None
-        if "" != self.closed:
+        res =  ""
+        if "" != str(self.closed):
             res = datetime.strptime(self.closed, '%Y-%m-%d').strftime('%Y-%m-%d')
-        else:
-            res = ""
         return res 
     
     def data(self):
@@ -86,7 +84,7 @@ class Action:
         self.name = new_name
         self.position = new_position
         self.closed = new_closed
-        logging.debug("closed " + str(self.closed))
+        #logging.debug("closed " + str(self.closed))
         
     def isMoreImportantThan(self, a):
         """
@@ -122,6 +120,7 @@ class Action:
     
     def data(self):
         """Return the name with no \r, \t or \n"""
+        #logging.debug("".join(["chiuso:[", self.closed, "]"]))
         data_action = ""
         if("" != self.closed.replace(" ", "")):
             data_action = " ".join([self.name, "[", self.closed ,"]"])
