@@ -80,10 +80,11 @@ class Action:
     Class about a general Single Action.
     """
     
-    def __init__(self, new_name, new_position, new_closed = ''):
+    def __init__(self, new_name, new_position, new_closed = '', new_context = ''):
         self.name = new_name
         self.position = new_position
         self.closed = new_closed
+        self.context = new_context
         #logging.debug("closed " + str(self.closed))
         
     def isMoreImportantThan(self, a):
@@ -110,13 +111,13 @@ class Action:
         """
         Returns
         -------
-        true if self is a next action, that is self.position is the lowest. False otherwise
+        true if self is a next action, that is self.position is the lowest and it's not finished. False otherwise
             
         Parameters
         ----------
         self: self
         """
-        return (1 == int(self.position))
+        return (1 == int(self.position) and "" == self.closed)
     
     def data(self):
         """Return the name with no \r, \t or \n"""

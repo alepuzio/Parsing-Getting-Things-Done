@@ -24,6 +24,8 @@ class MyHandler(xml.sax.handler.ContentHandler):
         self.activity = ""
         self.closedPrj = ""
         self.closed = ""
+        self.context  = ""
+        
     def _getCharacterData(self):
         """Read the character"""
         data = ''.join(self._charBuffer).strip()
@@ -59,6 +61,8 @@ class MyHandler(xml.sax.handler.ContentHandler):
         elif tag_name.isAction():
             self.priority = attrs['number'] if 'number' in attrs else '0'
             self.closed = attrs['closed'] if 'closed' in attrs else ''
+            self.context = attrs['context'] if 'context' in attrs else ''
+            
         else:
            logging.warn("".join(["Unkown startElement(", tagName ,")"]))
 
@@ -82,7 +86,7 @@ class MyHandler(xml.sax.handler.ContentHandler):
         elif tag_name.isAction():
           #logging.debug("closed action" +str(self.closed))
           self.list_action.append( Action(   str(self.activity ),
-                             self.priority, self.closed) )
+                             self.priority, self.closed, self.context), )
         elif tag_name.isEndFile():
           logging.debug(" ".join(["chiudo projects:", str(self.list_project)]))
         
