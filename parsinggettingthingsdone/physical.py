@@ -81,6 +81,7 @@ class Filesystem:
             os.remove(report_name)	
         f = open(report_name, "a")
         row_list = self.csv.row()
+        row_list.sort()
         if not row_list:
             f.write(" ".join( ["Every project","has no Next Action","\n"] ))
         else:

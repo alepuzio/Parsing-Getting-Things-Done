@@ -4,6 +4,13 @@ import datetime
 class Context:
     """
     Class about a general Context in a Next Action.
+    Shortcut by RememberTheMilk
+    = : estimation time
+    @ : place
+    * : repeat interval
+    # : tag
+    ~ : start date
+    ^ : end date
     """
     
     def __init__(self, new_context):

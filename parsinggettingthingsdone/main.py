@@ -32,6 +32,8 @@ class Main:
         """Run elaboration"""
         logging.basicConfig(level=logging.DEBUG)
         logging.debug('Begin')
+        logging.debug('ale'>'batman')
+        
         args = sys.argv
         if( 3 != len(args) ) :
             raise Exception("Usage: main.py input_path output_path")
