@@ -4,19 +4,22 @@ Created on Wed May  3 12:07:14 2023
 
 @author: Alessandro
 """
-import sys
-from physical import Directory
-from physical import CSV
-from physical import Filesystem
-from datetime import datetime
 import logging
+import sys
+sys.path.insert(0, '../parsinggettingthingsdone')
+
+from datetime import datetime
+from physical import CSV
+from physical import Directory
+from physical import Filesystem
+
 
 class Main:
     """Main class"""
     
         
     def projects(args):
-        """Return the list of projects"""
+        """Return the list of projects and Next Action"""
         Filesystem( args[2], 
                    CSV (
                        datetime.now(), 
@@ -26,6 +29,7 @@ class Main:
         
         
     if __name__ == '__main__':
+        """Run elaboration"""
         logging.basicConfig(level=logging.DEBUG)
         logging.debug('Begin')
         args = sys.argv
