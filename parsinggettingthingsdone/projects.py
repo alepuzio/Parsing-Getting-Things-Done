@@ -1,16 +1,19 @@
 # -*- coding: utf-8 -*
 from datetime import datetime    
+from datetime import date
 import logging
 
 class Project:
     """  Class about a Project,
     declared as a sequence of more steps direct to a goal.
     """
-    def __init__(self, new_name, new_important , new_closed, new_list_actions):
+    def __init__(self, new_name, new_important , new_closed, new_list_actions, 
+                 new_start ):
         self.name = new_name
         self.important = new_important
         self.closed = new_closed
         self.list_actions = new_list_actions
+        self.start = new_start
     
     def nextAction(self):
         """ Return
@@ -19,11 +22,20 @@ class Project:
         """
         result = [ x  for x in self.list_actions if x.isNextAction ()]
         numberNA = len(result)
-        if (0 == numberNA ) :
+        
+        if("" != self.start ):
+            logging.debug("start:"
+                          + self.start_formatted() > date.today().strftime('%Y-%m-%d')
+                          + ">"+self.start_formatted()
+                          + ">>"+date.today().strftime('%Y-%m-%d')
+                          )
+            result.append(Action( "".join(["This project will start in ", self.start_formatted() ]), 1))
+            
+        elif (0 == numberNA ) :
             result.append(Action( "This project has not any Action", 1))
         elif (1 < numberNA):
             result = []
-            result.append(  Action (" ".join(['Forbitten more than 1 Next Action, there are', str(numberNA) ,'NA']),1))
+            result.append(  Action (" ".join(['This project has ', str(numberNA) ,'Next Action: it has to be fixed']),1))
         return result[0] 
         
     def __eq__(self, other): 
@@ -32,6 +44,10 @@ class Project:
             # don't attempt to compare against unrelated types
             return NotImplemented
         return self.name == other.name 
+
+    def __lt__(self, other): 
+        """Return True if the Next Actions have the same name."""
+        return self.name < other.name 
     
     def __str__(self):
         """Return the Next Action as string"""
@@ -54,10 +70,10 @@ class Project:
         Return the string that indicates this project as Important in the CSV row
         """
         res =  None
-        if  (1 == self.important) :
+        if  ("1" == str(self.important)) :
             res = "! "
         else:
-            res = ""
+            res = "non importante ["+self.important+"]"
         return res 
     
     def closed_formatted(self):
@@ -68,6 +84,16 @@ class Project:
         if "" != str(self.closed):
             res = datetime.strptime(self.closed, '%Y-%m-%d').strftime('%Y-%m-%d')
         return res 
+    
+    def start_formatted(self):
+        """
+        Return the optional start date in the CSV row in format Y-m-d.
+        """
+        res =  ""
+        if "" != str(self.start):
+            res = datetime.strptime(self.start, '%Y-%m-%d').strftime('%Y-%m-%d')
+        return res 
+    
     
     def data(self):
         """
@@ -80,10 +106,14 @@ class Action:
     Class about a general Single Action.
     """
     
-    def __init__(self, new_name, new_position, new_closed = ''):
+    def __init__(self, new_name, new_position, new_closed = '', 
+                 new_context = '',
+                 new_estimation =''):
         self.name = new_name
         self.position = new_position
         self.closed = new_closed
+        self.context = new_context
+        self.estimation = new_estimation
         #logging.debug("closed " + str(self.closed))
         
     def isMoreImportantThan(self, a):
@@ -110,20 +140,25 @@ class Action:
         """
         Returns
         -------
-        true if self is a next action, that is self.position is the lowest. False otherwise
+        true if self is a next action, that is self.position is the lowest and it's not finished. False otherwise
             
         Parameters
         ----------
         self: self
         """
-        return (1 == int(self.position))
+        return (1 == int(self.position) )
     
     def data(self):
         """Return the name with no \r, \t or \n"""
         #logging.debug("".join(["chiuso:[", self.closed, "]"]))
         data_action = ""
         if("" != self.closed.replace(" ", "")):
-            data_action = " ".join([self.name, "[", self.closed ,"]"])
+            data_action = " ".join(["[", self.closed ,"]", self.name, "choose another NA"])
+        elif("" != self.context.replace(" ", "")):
+            list_context = self.context.split(",")
+            data_action = " ".join([self.name, ",",", ".join(list_context)])
+        if ("" != self.estimation.replace(" ", "")):
+            data_action = " ".join([self.name, "," ,self.estimation , ", ".join(list_context)])
         else:
             data_action = self.name
         return data_action.replace("\r","").replace("\t","").replace("\n","")
