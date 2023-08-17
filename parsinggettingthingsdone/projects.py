@@ -43,7 +43,7 @@ class Project:
             elif (1 < numberNA):
                 result.append(  Action (" ".join(['This project has ', str(numberNA) ,'Next Action: it has to be fixed']),1))
             else:
-                logging.debug("Thsi project has 1 NA")
+                logging.debug("This project has 1 NA")
         return result[0] 
         
     def __eq__(self, other): 
@@ -101,7 +101,7 @@ class Project:
         if "" != str(self.depends):
             list_depends = self.depends.split(", ")
             res = " , ".join(list_depends)
-        return res 
+        return res.upper()
 
     
     def start_formatted(self):
@@ -195,7 +195,7 @@ class Action:
         if "" != str(self.depends):
             list_depends = self.depends.split(", ")
             res = " , ".join(list_depends)
-        return res 
+        return res.upper()
 
     def __eq__(self, other): 
         """Return True if the Actions have the same name"""
