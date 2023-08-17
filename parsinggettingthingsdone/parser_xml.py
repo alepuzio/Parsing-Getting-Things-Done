@@ -28,6 +28,8 @@ class MyHandler(xml.sax.handler.ContentHandler):
         self.context  = ""
         self.estimation = ""
         
+        self.depends_prj = ""
+        
     def _getCharacterData(self):
         """Read the character"""
         data = ''.join(self._charBuffer).strip()
@@ -60,13 +62,14 @@ class MyHandler(xml.sax.handler.ContentHandler):
             self.important = attrs['important'] if 'important' in attrs else ''
             self.closedProject = attrs['closed'] if 'closed' in attrs else ''
             self.start_prj = attrs['start'] if 'start' in attrs else ''
+            self.depends_prj = attrs['depends'] if 'depends' in attrs else ''
             #logging.debug("clsed2:["+str(self.closedProject)+"]")
         elif tag_name.isAction():
             self.priority = attrs['number'] if 'number' in attrs else '0'
             self.closed = attrs['closed'] if 'closed' in attrs else ''
             self.context = attrs['context'] if 'context' in attrs else ''
             self.estimation = attrs['estimation'] if 'estimation' in attrs else ''
-            
+            self.depends = attrs['depends'] if 'depends' in attrs else ''
         else:
            logging.warn("")#.join(["Unkown startElement(", tagName ,")"]))
 
@@ -84,14 +87,19 @@ class MyHandler(xml.sax.handler.ContentHandler):
                     self.important,
                     self.closedProject,
                     self.list_action,
-                    self.start_prj
+                    self.start_prj,
+                    self.depends_prj
                     )
                 )
             #self.list_action = []
         elif tag_name.isAction():
           #logging.debug("closed action" +str(self.closed))
           self.list_action.append( Action(   str(self.activity ),
-                             self.priority, self.closed, self.context, self.estimation), )
+                             self.priority, self.closed, self.context
+                             , self.estimation
+                             , self.depends
+                             ),
+                                  )
         elif tag_name.isEndFile():
           logging.debug(" ")#.join(["chiudo projects:", str(self.list_project)]))
         else:
