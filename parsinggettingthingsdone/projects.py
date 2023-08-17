@@ -8,13 +8,14 @@ class Project:
     declared as a sequence of more steps direct to a goal.
     """
     def __init__(self, new_name, new_important , new_closed, new_list_actions, 
-                 new_start = '', new_depends = '' ):
+                 new_start = '', new_depends = '', new_area = '' ):
         self.name = new_name
         self.important = new_important
         self.closed = new_closed
         self.list_actions = new_list_actions
         self.start = new_start
         self.depends = new_depends
+        self.area = new_area
     
     def nextAction(self):
         """ Return
@@ -70,8 +71,12 @@ class Project:
         Return name of the of the Project.
         - If it's Important there will be a mark
         - If it's closed there will be the finish date
+        - The life area of the project, if existing
+        - Total number of the actions of the project
+
         """
-        return "".join([ self.important_mark(), self.closed_formatted(),  ProjectName(self.name).name()])
+        return ";".join([ self.important_mark(), self.closed_formatted(),  ProjectName(
+            self.name, self.area).name(), str(len(self.list_actions))])
     
     def important_mark(self):
         """
@@ -171,7 +176,6 @@ class Action:
     
     def data(self):
         """Return the name with no \r, \t or \n"""
-        #logging.debug("".join(["chiuso:[", self.closed, "]"]))
         data_action = ""
         if("" != self.closed.replace(" ", "")):
             data_action = " ".join(["[", self.closed ,"]", self.name, "choose another NA"])
@@ -216,8 +220,9 @@ class Action:
         
 class ProjectName:
     """Elaborate the name of the project in natural language"""
-    def __init__(self, new_original_name):
+    def __init__(self, new_original_name, new_area = ''):
         self.original_name = new_original_name
+        self.area = new_area
         
     def name2(self):
         length = len("progetto-")
@@ -225,7 +230,7 @@ class ProjectName:
     
     def name(self):
         """Return the name of the Project for the CSV report"""
-        return self.original_name.title()
+        return ";".join([self.area, self.original_name.title()])
     
     def __str__(self):
         return "".join(["ProjectName:", self.original_name])

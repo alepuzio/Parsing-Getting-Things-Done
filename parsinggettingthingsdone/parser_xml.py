@@ -27,7 +27,7 @@ class MyHandler(xml.sax.handler.ContentHandler):
         self.closed = ""
         self.context  = ""
         self.estimation = ""
-        
+        self.area = ""
         self.depends_prj = ""
         
     def _getCharacterData(self):
@@ -39,8 +39,12 @@ class MyHandler(xml.sax.handler.ContentHandler):
     def parse(self, f):
         """
         Parse the file.
-        Returnr the list of project
+        Return the list of project
         """
+        start = 'area-'
+        end = '.xml'
+        logging.debug("nome area:" + f[f.find(start)+len(start):f.rfind(end)])
+        self.area = f[f.find(start)+len(start):f.rfind(end)]
         xml.sax.parse(f, self)
         return  self.list_project 
 
@@ -88,7 +92,8 @@ class MyHandler(xml.sax.handler.ContentHandler):
                     self.closedProject,
                     self.list_action,
                     self.start_prj,
-                    self.depends_prj
+                    self.depends_prj,
+                    self.area
                     )
                 )
             #self.list_action = []

@@ -85,7 +85,7 @@ class Filesystem:
         if not row_list:
             f.write(" ".join( ["Every project","has no Next Action","\n"] ))
         else:
-            f.write(";".join ( ["Project", "NextAction","\n"]) )
+            f.write(";".join ( ["Important","Closed at","Area","Project", "Difficulty","NextAction","\n"]) )
             for areas in row_list:
                 for project_next_Action in areas:
                     f.write("".join([(project_next_Action.csv()), "\n" ]))
