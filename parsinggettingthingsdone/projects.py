@@ -36,9 +36,8 @@ class Project:
                           )
             #logging.debug(result[0])
         else:
-            numberNA = len(result)
             result = [ x  for x in self.list_actions if x.isNextAction ()]         
-
+            numberNA = len(result)
             if (0 == numberNA ) :
                 result.append(Action( "This project has not any Action", 1))
             elif (1 < numberNA):
@@ -76,8 +75,22 @@ class Project:
 
         """
         return ";".join([ self.important_mark(), self.closed_formatted(),  ProjectName(
-            self.name, self.area).name(), str(len(self.list_actions))])
+            self.name, self.area).name(), self.progress_formatted()])
     
+    
+    def progress_formatted(self):
+        """
+        Return the percentage of the work to do
+        """
+        closed = [ x  for x in self.list_actions if x.closed ]   
+        total = len(self.list_actions);
+        if 0 == total:
+            res = 0
+        else:
+            res = ((total - len(closed))/total)*100
+            logging.debug("progress("+str(total)+","+str(len(closed))+","+str((total - len(closed)))+"):" + str(res))
+        return str(res)+"%"
+
     def important_mark(self):
         """
         Return the string that indicates this project as Important in the CSV row

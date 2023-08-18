@@ -69,7 +69,7 @@ class MyHandler(xml.sax.handler.ContentHandler):
             self.depends_prj = attrs['depends'] if 'depends' in attrs else ''
             #logging.debug("clsed2:["+str(self.closedProject)+"]")
         elif tag_name.isAction():
-            self.priority = attrs['number'] if 'number' in attrs else '0'
+            self.priority = attrs['priority'] if 'priority' in attrs else '0'
             self.closed = attrs['closed'] if 'closed' in attrs else ''
             self.context = attrs['context'] if 'context' in attrs else ''
             self.estimation = attrs['estimation'] if 'estimation' in attrs else ''
