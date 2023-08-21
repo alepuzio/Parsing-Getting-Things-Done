@@ -17,6 +17,8 @@ class Project:
         self.depends = new_depends
         self.area = new_area
     
+    def area2(self):
+        return self.area
     def nextAction(self):
         """ Return
         ----------
