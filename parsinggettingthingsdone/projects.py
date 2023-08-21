@@ -8,7 +8,8 @@ class Project:
     declared as a sequence of more steps direct to a goal.
     """
     def __init__(self, new_name, new_important , new_closed, new_list_actions, 
-                 new_start = '', new_depends = '', new_area = '' ):
+                 new_start = '', new_depends = '', new_area = '',
+                 new_due = ''):
         self.name = new_name
         self.important = new_important
         self.closed = new_closed
@@ -16,9 +17,8 @@ class Project:
         self.start = new_start
         self.depends = new_depends
         self.area = new_area
-    
-    def area2(self):
-        return self.area
+        self.due = new_due
+        
     def nextAction(self):
         """ Return
         ----------
@@ -44,8 +44,16 @@ class Project:
                 result.append(Action( "This project has not any Action", 1))
             elif (1 < numberNA):
                 result.append(  Action (" ".join(['This project has ', str(numberNA) ,'Next Action: it has to be fixed']),1))
-            else:
-                logging.debug("This project has 1 NA")
+            #else:
+             #   logging.debug("This project has 1 NA")
+        if("" != self.due ):
+            logging.debug("due:"
+                          + self.start_formatted() > date.today().strftime('%Y-%m-%d')
+                          + ">"+self.start_formatted()
+                          + ">>"+date.today().strftime('%Y-%m-%d')
+                          )
+            #result.append(Action( "".join([result[0].data(),"This project has to be closed before ", self.due ]), 1))
+            
         return result[0] 
         
     def __eq__(self, other): 
@@ -76,7 +84,7 @@ class Project:
         - Total number of the actions of the project
 
         """
-        return ";".join([ self.important_mark(), self.closed_formatted(),  ProjectName(
+        return ";".join([ self.important_mark(), self.closed_formatted(), self.due,  ProjectName(
             self.name, self.area).name(), self.progress_formatted()])
     
     

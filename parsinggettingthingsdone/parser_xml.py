@@ -29,6 +29,7 @@ class MyHandler(xml.sax.handler.ContentHandler):
         self.estimation = ""
         self.area = ""
         self.depends_prj = ""
+        self.due_prj = ""
         
     def _getCharacterData(self):
         """Read the character"""
@@ -67,7 +68,8 @@ class MyHandler(xml.sax.handler.ContentHandler):
             self.closedProject = attrs['closed'] if 'closed' in attrs else ''
             self.start_prj = attrs['start'] if 'start' in attrs else ''
             self.depends_prj = attrs['depends'] if 'depends' in attrs else ''
-            #logging.debug("clsed2:["+str(self.closedProject)+"]")
+            self.due_prj = attrs['due'] if 'due' in attrs else ''
+            logging.debug("due_prj:["+str(self.due_prj)+"]")
         elif tag_name.isAction():
             self.priority = attrs['priority'] if 'priority' in attrs else '0'
             self.closed = attrs['closed'] if 'closed' in attrs else ''
@@ -93,7 +95,8 @@ class MyHandler(xml.sax.handler.ContentHandler):
                     self.list_action,
                     self.start_prj,
                     self.depends_prj,
-                    self.area
+                    self.area,
+                    self.due_prj
                     )
                 )
             #self.list_action = []
