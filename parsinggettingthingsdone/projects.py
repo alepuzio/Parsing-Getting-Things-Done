@@ -32,7 +32,7 @@ class Project:
             result.append(Action( "".join(["This project will start in ", self.start_formatted() ]), 1))
         elif (0 < len(self.depends) ) :
             result.append(
-                Action(" ".join(["This project depends on ", self.depends_formatted() ]), 1)
+                Action(" ".join(["This project is blocked by ", self.depends_formatted() ]), 1)
                           )
             #logging.debug(result[0])
         else:
@@ -85,11 +85,11 @@ class Project:
         closed = [ x  for x in self.list_actions if x.closed ]   
         total = len(self.list_actions);
         if 0 == total:
-            res = 0
+            res = 100.0
         else:
             res = ((total - len(closed))/total)*100
-            logging.debug("progress("+str(total)+","+str(len(closed))+","+str((total - len(closed)))+"):" + str(res))
-        return str(res)+"%"
+            #logging.debug("progress("+str(total)+","+str(len(closed))+","+str((total - len(closed)))+"):" + str(res))
+        return str(res)
 
     def important_mark(self):
         """
@@ -97,7 +97,8 @@ class Project:
         """
         res =  None
         if  ("1" == str(self.important)) :
-            res = "! "
+            res = "Important "
+            #logging.debug(self.name +" e "+ self.important)
         else:
             res = ""
         return res 
@@ -157,7 +158,6 @@ class Action:
         
     def isMoreImportantThan(self, a):
         """
-
         Returns
         -------
         true if self is more important then a, that is self.position is lower then a.position. False otherwise
@@ -189,17 +189,18 @@ class Action:
     
     def data(self):
         """Return the name with no \r, \t or \n"""
-        data_action = ""
+        data_action = None
         if("" != self.closed.replace(" ", "")):
             data_action = " ".join(["[", self.closed ,"]", self.name, "choose another NA"])
-        elif("" != self.context.replace(" ", "")):
+        if("" != self.context.replace(" ", "")):
             list_context = self.context.split(",")
             data_action = " ".join([self.name, ",",", ".join(list_context)])
-        if ("" != self.estimation.replace(" ", "")):
-            data_action = " ".join([self.name, "," ,self.estimation , ", ".join(list_context)])
-        elif (0 < len(self.depends) ) :
-            data_action = " ".join(["This NA depends on ", self.depends_formatted() ])
+        if (0 < len(self.depends) ) :
+            data_action = " ".join(["This NA is blocked by ", self.depends_formatted() ])
             logging.debug("data_action: "+ data_action)
+        
+        elif ("" != self.estimation.replace(" ", "")):
+            data_action = " ".join([self.name, "," ,self.estimation , ", ".join(list_context)])
         else:
             data_action = self.name
         return data_action.replace("\r","").replace("\t","").replace("\n","")
@@ -237,10 +238,6 @@ class ProjectName:
         self.original_name = new_original_name
         self.area = new_area
         
-    def name2(self):
-        length = len("progetto-")
-        return self.original_name[length:].replace('-', ' ').title()
-    
     def name(self):
         """Return the name of the Project for the CSV report"""
         return ";".join([self.area, self.original_name.title()])
