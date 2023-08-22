@@ -30,6 +30,8 @@ class MyHandler(xml.sax.handler.ContentHandler):
         self.area = ""
         self.depends_prj = ""
         self.due_prj = ""
+        self.due_action = ""
+        self.goal = ""
         
     def _getCharacterData(self):
         """Read the character"""
@@ -69,13 +71,14 @@ class MyHandler(xml.sax.handler.ContentHandler):
             self.start_prj = attrs['start'] if 'start' in attrs else ''
             self.depends_prj = attrs['depends'] if 'depends' in attrs else ''
             self.due_prj = attrs['due'] if 'due' in attrs else ''
-            logging.debug("due_prj:["+str(self.due_prj)+"]")
+            self.goal = attrs['goal'] if 'goal' in attrs else ''
         elif tag_name.isAction():
             self.priority = attrs['priority'] if 'priority' in attrs else '0'
             self.closed = attrs['closed'] if 'closed' in attrs else ''
             self.context = attrs['context'] if 'context' in attrs else ''
             self.estimation = attrs['estimation'] if 'estimation' in attrs else ''
             self.depends = attrs['depends'] if 'depends' in attrs else ''
+            self.due_action = attrs['due'] if 'due' in attrs else ''
         else:
            logging.warn("")#.join(["Unkown startElement(", tagName ,")"]))
 
@@ -89,14 +92,15 @@ class MyHandler(xml.sax.handler.ContentHandler):
             #logging.debug("closed project[" +str(self.closed) +"]")
             self.list_project.append(
                 Project(
-                    self.current_project, 
-                    self.important,
-                    self.closedProject,
-                    self.list_action,
-                    self.start_prj,
-                    self.depends_prj,
-                    self.area,
-                    self.due_prj
+                    self.current_project
+                    , self.important
+                    , self.closedProject
+                    , self.list_action
+                    , self.start_prj
+                    , self.depends_prj
+                    , self.area
+                    , self.due_prj
+                    , self.goal
                     )
                 )
             #self.list_action = []
@@ -106,6 +110,7 @@ class MyHandler(xml.sax.handler.ContentHandler):
                              self.priority, self.closed, self.context
                              , self.estimation
                              , self.depends
+                             , self.due_action
                              ),
                                   )
         elif tag_name.isEndFile():

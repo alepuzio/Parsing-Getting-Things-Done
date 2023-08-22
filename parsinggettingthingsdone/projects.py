@@ -9,7 +9,7 @@ class Project:
     """
     def __init__(self, new_name, new_important , new_closed, new_list_actions, 
                  new_start = '', new_depends = '', new_area = '',
-                 new_due = ''):
+                 new_due = '', new_goal =''):
         self.name = new_name
         self.important = new_important
         self.closed = new_closed
@@ -18,6 +18,7 @@ class Project:
         self.depends = new_depends
         self.area = new_area
         self.due = new_due
+        self.goal = new_goal
         
     def nextAction(self):
         """ Return
@@ -52,8 +53,7 @@ class Project:
                           + ">"+self.start_formatted()
                           + ">>"+date.today().strftime('%Y-%m-%d')
                           )
-            #result.append(Action( "".join([result[0].data(),"This project has to be closed before ", self.due ]), 1))
-            
+            result[0] =  Action (" ".join( [result[0].data(), " before ", str(self.due)]), 1)
         return result[0] 
         
     def __eq__(self, other): 
@@ -85,7 +85,7 @@ class Project:
 
         """
         return ";".join([ self.important_mark(), self.closed_formatted(), self.due,  ProjectName(
-            self.name, self.area).name(), self.progress_formatted()])
+            self.name, self.area).name(), self.goal_formatted(), self.progress_formatted()])
     
     
     def progress_formatted(self):
@@ -148,7 +148,18 @@ class Project:
         Return the data of the Next Action
         """
         return str(self.nextAction().data())
-        
+
+
+    def goal_formatted(self):
+        """
+        Return the optional goal of the project in the CSV row 
+        """
+        res =  ""
+        if "" != self.goal:
+            res = "".join(["per ", self.goal])
+        return res 
+    
+            
 class Action:
     """
     Class about a general Single Action.
@@ -157,14 +168,28 @@ class Action:
     def __init__(self, new_name, new_position, new_closed = '', 
                  new_context = '',
                  new_estimation ='',
-                 new_depends =''):
+                 new_depends ='',
+                 new_end = ''):
         self.name = new_name
         self.position = new_position
         self.closed = new_closed
         self.context = new_context
         self.estimation = new_estimation
         self.depends = new_depends
+        self.end = new_end
         #logging.debug("closed " + str(self.closed))
+
+    def end_formatted(self):
+        """
+        Return the optional end date in the CSV row in format Y-m-d.
+        """
+        res =  ""
+        if "" != str(self.end):
+            res = "".join([
+                " entro il "
+                , datetime.strptime(self.end, '%Y-%m-%d').strftime('%Y-%m-%d')
+                ])
+        return res 
         
     def isMoreImportantThan(self, a):
         """
@@ -200,19 +225,16 @@ class Action:
     def data(self):
         """Return the name with no \r, \t or \n"""
         data_action = None
+        list_context = []
         if("" != self.closed.replace(" ", "")):
             data_action = " ".join(["[", self.closed ,"]", self.name, "choose another NA"])
-        if("" != self.context.replace(" ", "")):
+        elif("" != self.context.replace(" ", "")):
             list_context = self.context.split(",")
-            data_action = " ".join([self.name, ",",", ".join(list_context)])
-        if (0 < len(self.depends) ) :
-            data_action = " ".join(["This NA is blocked by ", self.depends_formatted() ])
-            logging.debug("data_action: "+ data_action)
         
-        elif ("" != self.estimation.replace(" ", "")):
-            data_action = " ".join([self.name, "," ,self.estimation , ", ".join(list_context)])
-        else:
-            data_action = self.name
+        data_action = " ".join([self.name + self.end_formatted(), 
+                                ";", self.end, 
+                                ";" , ";".join(list_context),
+                               ";", self.depends_formatted()])
         return data_action.replace("\r","").replace("\t","").replace("\n","")
 
     def depends_formatted(self):
