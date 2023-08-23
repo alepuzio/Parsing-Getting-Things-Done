@@ -106,9 +106,11 @@ class Project:
         Return the string that indicates this project as Important in the CSV row
         """
         res =  None
-        if  ("1" == str(self.important)) :
-            res = "Important "
+        if  ("1" == str(self.important) ):
+            res = "For me"
             #logging.debug(self.name +" e "+ self.important)
+        elif (""!= self.closed.replace(" ","") or ""!= self.goal.replace(" ","")):
+            res = "Mandatory" 
         else:
             res = ""
         return res 
