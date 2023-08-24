@@ -10,7 +10,7 @@ import logging
 import os
 
 from parser_xml import MyHandler
-
+from formatter import CSV
 
 
 class Directory:
@@ -35,22 +35,6 @@ class Directory:
         #logging.debug("Project's list:" + repr(projectList))
         return projectList
 
-class CSV:
-    """ 
-    Class about the file to write.
-    """
-    def __init__(self, new_date_time_obj, new_list_data):
-        self.date_time_obj = new_date_time_obj
-        self.list_data_to_print = new_list_data
-        
-    def row(self):
-        """Return the built row"""
-        return  [ x  for x in self.list_data_to_print ]
-    
-    def name(self):
-        """Return the name of the report file"""
-        return "-".join([self.date_time_obj.strftime("%Y-%m-%d"), "PROJECTS.csv"])
-    
     
 class Filesystem:
     """
@@ -81,11 +65,10 @@ class Filesystem:
             os.remove(report_name)	
         f = open(report_name, "a")
         row_list = self.csv.row()
-        row_list.sort()
         if not row_list:
             f.write(" ".join( ["Every project","has no Next Action","\n"] ))
         else:
-            f.write(";".join ( ["Project", "NextAction","\n"]) )
+            f.write(";".join ( ["Important","Closed at","To finish before","Area","Project", "Goal", "Work To Do [%]","NextAction","\n"]) )
             for areas in row_list:
                 for project_next_Action in areas:
                     f.write("".join([(project_next_Action.csv()), "\n" ]))

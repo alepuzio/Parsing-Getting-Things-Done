@@ -27,6 +27,11 @@ class MyHandler(xml.sax.handler.ContentHandler):
         self.closed = ""
         self.context  = ""
         self.estimation = ""
+        self.area = ""
+        self.depends_prj = ""
+        self.due_prj = ""
+        self.due_action = ""
+        self.goal = ""
         
     def _getCharacterData(self):
         """Read the character"""
@@ -37,8 +42,12 @@ class MyHandler(xml.sax.handler.ContentHandler):
     def parse(self, f):
         """
         Parse the file.
-        Returnr the list of project
+        Return the list of project
         """
+        start = 'area-'
+        end = '.xml'
+        logging.debug("nome area:" + f[f.find(start)+len(start):f.rfind(end)])
+        self.area = f[f.find(start)+len(start):f.rfind(end)]
         xml.sax.parse(f, self)
         return  self.list_project 
 
@@ -60,13 +69,16 @@ class MyHandler(xml.sax.handler.ContentHandler):
             self.important = attrs['important'] if 'important' in attrs else ''
             self.closedProject = attrs['closed'] if 'closed' in attrs else ''
             self.start_prj = attrs['start'] if 'start' in attrs else ''
-            #logging.debug("clsed2:["+str(self.closedProject)+"]")
+            self.depends_prj = attrs['depends'] if 'depends' in attrs else ''
+            self.due_prj = attrs['due'] if 'due' in attrs else ''
+            self.goal = attrs['goal'] if 'goal' in attrs else ''
         elif tag_name.isAction():
-            self.priority = attrs['number'] if 'number' in attrs else '0'
+            self.priority = attrs['priority'] if 'priority' in attrs else '0'
             self.closed = attrs['closed'] if 'closed' in attrs else ''
             self.context = attrs['context'] if 'context' in attrs else ''
             self.estimation = attrs['estimation'] if 'estimation' in attrs else ''
-            
+            self.depends = attrs['depends'] if 'depends' in attrs else ''
+            self.due_action = attrs['due'] if 'due' in attrs else ''
         else:
            logging.warn("")#.join(["Unkown startElement(", tagName ,")"]))
 
@@ -80,18 +92,27 @@ class MyHandler(xml.sax.handler.ContentHandler):
             #logging.debug("closed project[" +str(self.closed) +"]")
             self.list_project.append(
                 Project(
-                    self.current_project, 
-                    self.important,
-                    self.closedProject,
-                    self.list_action,
-                    self.start_prj
+                    self.current_project
+                    , self.important
+                    , self.closedProject
+                    , self.list_action
+                    , self.start_prj
+                    , self.depends_prj
+                    , self.area
+                    , self.due_prj
+                    , self.goal
                     )
                 )
             #self.list_action = []
         elif tag_name.isAction():
           #logging.debug("closed action" +str(self.closed))
           self.list_action.append( Action(   str(self.activity ),
-                             self.priority, self.closed, self.context, self.estimation), )
+                             self.priority, self.closed, self.context
+                             , self.estimation
+                             , self.depends
+                             , self.due_action
+                             ),
+                                  )
         elif tag_name.isEndFile():
           logging.debug(" ")#.join(["chiudo projects:", str(self.list_project)]))
         else:

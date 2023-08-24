@@ -8,21 +8,24 @@ class Project:
     declared as a sequence of more steps direct to a goal.
     """
     def __init__(self, new_name, new_important , new_closed, new_list_actions, 
-                 new_start ):
+                 new_start = '', new_depends = '', new_area = '',
+                 new_due = '', new_goal =''):
         self.name = new_name
         self.important = new_important
         self.closed = new_closed
         self.list_actions = new_list_actions
         self.start = new_start
-    
+        self.depends = new_depends
+        self.area = new_area
+        self.due = new_due
+        self.goal = new_goal
+        
     def nextAction(self):
         """ Return
         ----------
         the Next Actions.           
         """
-        result = [ x  for x in self.list_actions if x.isNextAction ()]
-        numberNA = len(result)
-        
+        result = []
         if("" != self.start ):
             logging.debug("start:"
                           + self.start_formatted() > date.today().strftime('%Y-%m-%d')
@@ -30,12 +33,27 @@ class Project:
                           + ">>"+date.today().strftime('%Y-%m-%d')
                           )
             result.append(Action( "".join(["This project will start in ", self.start_formatted() ]), 1))
-            
-        elif (0 == numberNA ) :
-            result.append(Action( "This project has not any Action", 1))
-        elif (1 < numberNA):
-            result = []
-            result.append(  Action (" ".join(['This project has ', str(numberNA) ,'Next Action: it has to be fixed']),1))
+        elif (0 < len(self.depends) ) :
+            result.append(
+                Action(" ".join(["This project is blocked by ", self.depends_formatted() ]), 1)
+                          )
+            #logging.debug(result[0])
+        else:
+            result = [ x  for x in self.list_actions if x.isNextAction ()]         
+            numberNA = len(result)
+            if (0 == numberNA ) :
+                result.append(Action( "This project has not any Action", 1))
+            elif (1 < numberNA):
+                result.append(  Action (" ".join(['This project has ', str(numberNA) ,'Next Action: it has to be fixed']),1))
+            #else:
+             #   logging.debug("This project has 1 NA")
+        if("" != self.due ):
+            logging.debug("due:"
+                          + self.start_formatted() > date.today().strftime('%Y-%m-%d')
+                          + ">"+self.start_formatted()
+                          + ">>"+date.today().strftime('%Y-%m-%d')
+                          )
+            result[0] =  Action (" ".join( [result[0].data(), " before ", str(self.due)]), 1)
         return result[0] 
         
     def __eq__(self, other): 
@@ -62,18 +80,39 @@ class Project:
         Return name of the of the Project.
         - If it's Important there will be a mark
         - If it's closed there will be the finish date
+        - The life area of the project, if existing
+        - Total number of the actions of the project
+
         """
-        return "".join([ self.important_mark(), self.closed_formatted(),  ProjectName(self.name).name()])
+        return ";".join([ self.important_mark(), self.closed_formatted(), self.due,  ProjectName(
+            self.name, self.area).name(), self.goal_formatted(), self.progress_formatted()])
     
+    
+    def progress_formatted(self):
+        """
+        Return the percentage of the work to do
+        """
+        closed = [ x  for x in self.list_actions if x.closed ]   
+        total = len(self.list_actions);
+        if 0 == total:
+            res = 100.0
+        else:
+            res = ((total - len(closed))/total)*100
+            #logging.debug("progress("+str(total)+","+str(len(closed))+","+str((total - len(closed)))+"):" + str(res))
+        return str(res)
+
     def important_mark(self):
         """
         Return the string that indicates this project as Important in the CSV row
         """
         res =  None
-        if  ("1" == str(self.important)) :
-            res = "! "
+        if  ("1" == str(self.important) ):
+            res = "For me"
+            #logging.debug(self.name +" e "+ self.important)
+        elif (""!= self.closed.replace(" ","") or ""!= self.goal.replace(" ","")):
+            res = "Mandatory" 
         else:
-            res = "non importante ["+self.important+"]"
+            res = ""
         return res 
     
     def closed_formatted(self):
@@ -84,6 +123,17 @@ class Project:
         if "" != str(self.closed):
             res = datetime.strptime(self.closed, '%Y-%m-%d').strftime('%Y-%m-%d')
         return res 
+
+    def depends_formatted(self):
+        """
+        Return the optional list of projects  date in the CSV row in format Y-m-d.
+        """
+        res =  ""
+        if "" != str(self.depends):
+            list_depends = self.depends.split(", ")
+            res = " , ".join(list_depends)
+        return res.upper()
+
     
     def start_formatted(self):
         """
@@ -100,7 +150,18 @@ class Project:
         Return the data of the Next Action
         """
         return str(self.nextAction().data())
-        
+
+
+    def goal_formatted(self):
+        """
+        Return the optional goal of the project in the CSV row 
+        """
+        res =  ""
+        if "" != self.goal:
+            res = "".join(["per ", self.goal])
+        return res 
+    
+            
 class Action:
     """
     Class about a general Single Action.
@@ -108,17 +169,32 @@ class Action:
     
     def __init__(self, new_name, new_position, new_closed = '', 
                  new_context = '',
-                 new_estimation =''):
+                 new_estimation ='',
+                 new_depends ='',
+                 new_end = ''):
         self.name = new_name
         self.position = new_position
         self.closed = new_closed
         self.context = new_context
         self.estimation = new_estimation
+        self.depends = new_depends
+        self.end = new_end
         #logging.debug("closed " + str(self.closed))
+
+    def end_formatted(self):
+        """
+        Return the optional end date in the CSV row in format Y-m-d.
+        """
+        res =  ""
+        if "" != str(self.end):
+            res = "".join([
+                " entro il "
+                , datetime.strptime(self.end, '%Y-%m-%d').strftime('%Y-%m-%d')
+                ])
+        return res 
         
     def isMoreImportantThan(self, a):
         """
-
         Returns
         -------
         true if self is more important then a, that is self.position is lower then a.position. False otherwise
@@ -150,18 +226,28 @@ class Action:
     
     def data(self):
         """Return the name with no \r, \t or \n"""
-        #logging.debug("".join(["chiuso:[", self.closed, "]"]))
-        data_action = ""
+        data_action = None
+        list_context = []
         if("" != self.closed.replace(" ", "")):
             data_action = " ".join(["[", self.closed ,"]", self.name, "choose another NA"])
         elif("" != self.context.replace(" ", "")):
             list_context = self.context.split(",")
-            data_action = " ".join([self.name, ",",", ".join(list_context)])
-        if ("" != self.estimation.replace(" ", "")):
-            data_action = " ".join([self.name, "," ,self.estimation , ", ".join(list_context)])
-        else:
-            data_action = self.name
+        
+        data_action = " ".join([self.name + self.end_formatted(), 
+                                ";", self.end, 
+                                ";" , ";".join(list_context),
+                               ";", self.depends_formatted()])
         return data_action.replace("\r","").replace("\t","").replace("\n","")
+
+    def depends_formatted(self):
+        """
+        Return the optional list of projects  date in the CSV row in format Y-m-d.
+        """
+        res =  ""
+        if "" != str(self.depends):
+            list_depends = self.depends.split(", ")
+            res = " , ".join(list_depends)
+        return res.upper()
 
     def __eq__(self, other): 
         """Return True if the Actions have the same name"""
@@ -182,16 +268,13 @@ class Action:
         
 class ProjectName:
     """Elaborate the name of the project in natural language"""
-    def __init__(self, new_original_name):
+    def __init__(self, new_original_name, new_area = ''):
         self.original_name = new_original_name
+        self.area = new_area
         
-    def name2(self):
-        length = len("progetto-")
-        return self.original_name[length:].replace('-', ' ').title()
-    
     def name(self):
         """Return the name of the Project for the CSV report"""
-        return self.original_name.title()
+        return ";".join([self.area, self.original_name.title()])
     
     def __str__(self):
         return "".join(["ProjectName:", self.original_name])
