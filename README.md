@@ -10,7 +10,8 @@ Python project about reading steps of more GTD projects and make  report file ab
 [x] read all the xml file in a directory 
 
 [x] In output file that contains the name of the project and the first action with context and eventual estimation time
-[] for every context, I create an output file named _YYYYMMDD-CONTEXT-NAME-TIME_ with the first actions
+
+[] For every context, I create an output file named _YYYYMMDD-CONTEXT-NAME-TIME_ with the first actions
 
 ### version v1
 

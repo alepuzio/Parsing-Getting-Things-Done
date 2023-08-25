@@ -179,7 +179,6 @@ class Action:
         self.estimation = new_estimation
         self.depends = new_depends
         self.end = new_end
-        #logging.debug("closed " + str(self.closed))
 
     def end_formatted(self):
         """
