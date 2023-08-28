@@ -8,7 +8,7 @@ Created on Thu Apr 27 14:44:50 2023
 
 import logging
 import os
-
+from formatter import Row_Csv
 from parser_xml import MyHandler
 
 
@@ -66,10 +66,11 @@ class Filesystem:
         if not row_list:
             f.write(" ".join( ["Every project","has no Next Action","\n"] ))
         else:
-            f.write(";".join ( ["Important","To finish before","Area","Project", "Goal", "Work To Do [%]","NextAction","Context","\n"]) )
+            f.write(";".join ( ["Important","To finish before","Area","Project", "Goal", "Work To Do [%]","NextAction","Context", "Blocked by","\n"]) )
             for areas in row_list:
                 for project_next_Action in areas:
-                    f.write("".join([(project_next_Action.data()), "\n" ]))
+                    f.write("".join([(
+                        Row_Csv(project_next_Action).data()), "\n" ]))
         f.close()
         
     def console(self):

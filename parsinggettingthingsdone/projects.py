@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*
-from datetime import datetime    
 from datetime import date
 import logging
 from formatter import ProjectName
+from formatter import Progress
+from formatter import Date
+from formatter import Goal
+from formatter import Important
+
 class Project:
     """  Class about a Project,
     declared as a sequence of more steps direct to a goal.
@@ -70,21 +74,10 @@ class Project:
     
     def __str__(self):
         """Return the Next Action as string"""
-        return None
-    #"".join([ProjectName(self.name).name() , "[" , str(len(self.list_actions)), "]"])
+        return "".join([ProjectName(self.name).name() , "[" , str(len(self.list_actions)), "]"])
 
 
-    def depends_formatted(self):
-        """
-        Return the optional list of projects  date in the CSV row in format Y-m-d.
-        """
-        res =  ""
-        if "" != str(self.depends):
-            list_depends = self.depends.split(", ")
-            res = " , ".join(list_depends)
-        return res.upper()
     
-
     
     def data(self):
         """
@@ -93,85 +86,16 @@ class Project:
         logging.debug("data " + str(self.nextAction()))
 
         return str(self.nextAction())#.data())
-
-
-    def goal_formatted(self):
-        """
-        Return the optional goal of the project in the CSV row 
-        """
-        res =  ""
-        if "" != self.goal:
-            res = "".join(["for ", self.goal])
-        return res 
-    
-    def important_formatted(self):
-        """
-        Return the string that indicates this project as Important in the CSV row
-        """
-        res =  None
-        if  ("1" == str(self.important) ):
-            res = "For me"
-            #logging.debug(self.name +" e "+ self.important)
-        elif (""!= self.closed.replace(" ","") or ""!= self.goal.replace(" ","")):
-            res = "Mandatory"
-        else:
-            res = ""
-        return res
-    
-    def closed_formatted(self):
-        """
-        Return the optional finish date in the CSV row in format Y-m-d.
-        """
-        res =  ""
-        if "" != str(self.closed):
-            res = datetime.strptime(self.closed, '%Y-%m-%d').strftime('%Y-%m-%d')
-        return res
-
-
-    def progress_formatted(self):
-        """
-        Return the percentage of the work to do
-        """
-        closed = [ x  for x in self.list_actions if x.closed ]
-        total = len(self.list_actions);
-        if 0 == total:
-            res = 100.0
-        else:
-            res = ((total - len(closed))/total)*100
-            #logging.debug("progress("+str(total)+","+str(len(closed))+","+str((total - len(closed)))+"):" + str(res))
-        return str(res)
+ 
+        
 
     def project_name(self):
         """
-        Return name of the of the Project.
-        - If it's Important there will be a mark
-        - If it's closed there will be the finish date
+        Return the full name of the of the Project.
         - The life area of the project, if existing
-        - Total number of the actions of the project
-    
+        - the name of the project
         """
-        return ";".join([ self.important_formatted(), self.closed_formatted(),
-                         self.due,  ProjectName(
-            self.name, self.area).name(),
-            self.goal_formatted(), self.progress_formatted()])
-
-
-
-def important_mark(self):
-    """
-    Return the string that indicates this project as Important in the CSV row
-    """
-    res =  None
-    if  ("1" == str(self.important) ):
-        res = "For me"
-        #logging.debug(self.name +" e "+ self.important)
-    elif (""!= self.closed.replace(" ","") or ""!= self.goal.replace(" ","")):
-        res = "Mandatory"
-    else:
-        res = ""
-    return res
-
-
+        return ProjectName(self.name, self.area).name()
        
 class Action:
     """
@@ -192,17 +116,6 @@ class Action:
         self.end = new_end
         self.prj =  new_prj
 
-    def end_formatted(self):
-        """
-        Return the optional end date in the CSV row in format Y-m-d.
-        """
-        res =  ""
-        if "" != str(self.end.replace(" ", "")):
-            res = "".join([
-                " entro il "
-                , datetime.strptime(self.end, '%Y-%m-%d').strftime('%Y-%m-%d')
-                ])
-        return res 
         
     def isMoreImportantThan(self, a):
         """
@@ -243,78 +156,7 @@ class Action:
                 and "" == self.depends_formatted() 
                 and "" != self.context)
        
-    def data(self):
-        """Return the name with no \r, \t or \n"""
-        data_action = None
-        if("" != self.closed.replace(" ", "")):
-            data_action = " ".join([
-                "["
-                , self.closed 
-                , "]"
-                , self.name, "choose another NA"
-                ])
-        data_action = " ".join([self.prj.important_formatted()
-                                , ";"
-                                , self.end_formatted()
-                                ,  ";" 
-                                , self.prj.project_name()
-                                ,  ";" 
-                                , self.prj.goal_formatted()
-                                ,  ";" 
-                                , self.prj.progress_formatted()
-                                , ";"
-                                , self.name
-                                ,  ";" 
-                                , self.context
-                                , ";"
-                                , self.depends_formatted()
-                              
-                                ] )
-        logging.warn("Action.data:" + str(data_action) )
-        return data_action.replace("\r","").replace("\t","").replace("\n","")
 
-    def depends_formatted(self):
-        """
-        Return the optional list of projects  date in the CSV row in format Y-m-d.
-        """
-        res =  ""
-        if "" != str(self.depends):
-            list_depends = self.depends.split(", ")
-            res = " , ".join(list_depends)
-        return res.upper()
-
-
-    def start_formatted(self):
-        """
-        Return the optional start date in the CSV row in format Y-m-d.
-        """
-        res =  ""
-        if "" != str(self.start):
-            res = datetime.strptime(self.start, '%Y-%m-%d').strftime('%Y-%m-%d')
-        return res
-
-    def important_mark(self):
-        """
-        Return the string that indicates this project as Important in the CSV row
-        """
-        res =  None
-        if  ("1" == str(self.important) ):
-            res = "For me"
-            #logging.debug(self.name +" e "+ self.important)
-        elif (""!= self.closed.replace(" ","") or ""!= self.goal.replace(" ","")):
-            res = "Mandatory"
-        else:
-            res = ""
-        return res
-
-    def closed_formatted(self):
-        """
-        Return the optional finish date in the CSV row in format Y-m-d.
-        """
-        res =  ""
-        if "" != str(self.closed):
-            res = datetime.strptime(self.closed, '%Y-%m-%d').strftime('%Y-%m-%d')
-        return res
 
     def __eq__(self, other): 
         """Return True if the Actions have the same name"""

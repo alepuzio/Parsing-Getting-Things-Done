@@ -82,7 +82,6 @@ class MyHandler(xml.sax.handler.ContentHandler):
                  , self.due_prj
                  , self.goal
                  );
-            #logging.debug(" self.prj:" + str( self.prj))
         elif tag_name.isAction():
             self.closed = attrs['closed'] if 'closed' in attrs else ''
             self.context = attrs['context'] if 'context' in attrs else ''
@@ -101,28 +100,10 @@ class MyHandler(xml.sax.handler.ContentHandler):
 
         tag_name = TagName(tagName)
         if tag_name.isProject() : 
-            #logging.debug("closed project[" +str(self.closed) +"]")
-            
             self.prj = None
-            """
-            self.list_project.append(
-                Project(
-                    self.current_project
-                    , self.important
-                    , self.closedProject
-                    , self.list_action
-                    , self.start_prj
-                    , self.depends_prj
-                    , self.area
-                    , self.due_prj
-                    , self.goal
-                    )
-                )
-            """
-            #self.list_action = []
         elif tag_name.isAction():
-          #logging.debug("closed action" +str(self.closed))
-          self.list_action.append( Action(   str(self.activity )
+          if (0 < len(self.activity.replace(" ", "")) and "" ==  self.closed.replace("", "" ) ):
+              self.list_action.append( Action(  self.activity 
                              , self.prj                                           
                              , self.closed
                              , self.context
@@ -131,8 +112,6 @@ class MyHandler(xml.sax.handler.ContentHandler):
                              , self.due_action
                              )
                                   )
-          #logging.debug(" self.list_action:" + str( self.list_action))
-
         elif tag_name.isEndFile():
           logging.debug(" ")#.join(["chiudo projects:", str(self.list_project)]))
         else:
