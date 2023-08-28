@@ -36,16 +36,20 @@ class One_CSV:
     
     
     
-class Filter_Context_CSV:
-    """ 
-    Class about the CSV file about the single context to write.
-    """
-    def __init__(self, new_date_time_obj, new_list_data):
-        self.date_time_obj = new_date_time_obj
-        self.list_data_to_print = new_list_data
-        
-    def files(self):
-        """
-        Return list of context
-        """
-        list_contex = [ x.context  for x in self.list_data_to_print ] 
+class ProjectName:
+    """Elaborate the name of the project in natural language"""
+    def __init__(self, new_original_name, new_area = ''):
+        self.original_name = new_original_name
+        self.area = new_area
+       
+
+    def name(self):
+        """Return the name of the Project for the CSV report"""
+        return ";".join([self.area, self.original_name.title()])
+
+    def __str__(self):
+        return "".join(["ProjectName:", self.original_name])
+
+    def __repr__(self):
+        return self.original_name
+

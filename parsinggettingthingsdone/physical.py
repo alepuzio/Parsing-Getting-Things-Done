@@ -66,28 +66,43 @@ class Filesystem:
         if not row_list:
             f.write(" ".join( ["Every project","has no Next Action","\n"] ))
         else:
-            f.write(";".join ( ["Important","Closed at","To finish before","Area","Project", "Goal", "Work To Do [%]","NextAction","\n"]) )
+            f.write(";".join ( ["Important","To finish before","Area","Project", "Goal", "Work To Do [%]","NextAction","Context","\n"]) )
             for areas in row_list:
                 for project_next_Action in areas:
-                    f.write("".join([(project_next_Action.csv()), "\n" ]))
+                    f.write("".join([(project_next_Action.data()), "\n" ]))
         f.close()
         
-     def context(self):
-            """
-            write (updating, if it exists) 
-            the physical file 
-            in the hard disk"""
-            report_name = "".join([ self.directory(), os.sep, self.csv.name() ]);
-            if (os.path.exists(report_name)) :
-                os.remove(report_name)	
-            f = open(report_name, "a")
-            row_list = self.csv.row()
-            if not row_list:
-                f.write(" ".join( ["Every project","has no Next Action","\n"] ))
-            else:
-                f.write(";".join ( ["Important","Closed at","To finish before","Area","Project", "Goal", "Work To Do [%]","NextAction","\n"]) )
-                for areas in row_list:
-                    for project_next_Action in areas:
-                        f.write("".join([(project_next_Action.csv()), "\n" ]))
-            f.close()
+    def console(self):
+           """
+           write the data int the console
+           """
+           row_list = self.csv.row()
+           if not row_list:
+               logging.debug(" ".join( ["Every project","has no Next Action","\n"] ))
+           else:
+               counter = 0
+               logging.debug(";".join ( ["Important","To finish before","Area","Project", "Goal", "Work To Do [%]","NextAction","\n"]) )
+               for areas in row_list:
+                   for project_next_Action in areas:
+                       counter = counter +1
+                       logging.debug("".join([ str(counter) ,">", (project_next_Action.data()), "\n" ]))
+        
+    def context(self):
+         """
+         write (updating, if it exists) 
+         the physical file 
+         in the hard disk"""
+         report_name = "".join([ self.directory(), os.sep, self.csv.name() ]);
+         if (os.path.exists(report_name)) :
+             os.remove(report_name)	
+             f = open(report_name, "a")
+         row_list = self.csv.row()
+         if not row_list:
+             f.write(" ".join( ["Every project","has no Next Action","\n"] ))
+         else:
+             f.write(";".join ( ["Important","To finish before","Area","Project", "Goal", "Work To Do [%]","NextAction","\n"]) )
+             for areas in row_list:
+                 for project_next_Action in areas:
+                     f.write("".join([project_next_Action.data(), "\n" ]))
+         f.close()
         

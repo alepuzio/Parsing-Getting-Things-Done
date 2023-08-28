@@ -25,12 +25,12 @@ class Main:
                        datetime.now(), 
                        Directory( args[1] ).xml() 
                        )
-                   ).file()
-        
+                   #).console()
+                    ).file()
         
     if __name__ == '__main__':
         """Run elaboration"""
-        logging.basicConfig(level=logging.DEBUG)
+        logging.basicConfig(level=logging.WARN)
         logging.debug('Begin')
         logging.debug('ale'>'batman')
         
