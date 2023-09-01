@@ -9,7 +9,7 @@ import sys
 sys.path.insert(0, '../parsinggettingthingsdone')
 
 from datetime import datetime
-from formatter import CSV
+from formatter import One_CSV
 from physical import Directory
 from physical import Filesystem
 
@@ -21,16 +21,16 @@ class Main:
     def projects(args):
         """Return the list of projects and Next Action"""
         Filesystem( args[2], 
-                   CSV (
+                   One_CSV (
                        datetime.now(), 
                        Directory( args[1] ).xml() 
                        )
-                   ).file()
-        
+                   #).console()
+                    ).next_actions_file()
         
     if __name__ == '__main__':
         """Run elaboration"""
-        logging.basicConfig(level=logging.DEBUG)
+        logging.basicConfig(level=logging.WARN)
         logging.debug('Begin')
         logging.debug('ale'>'batman')
         
