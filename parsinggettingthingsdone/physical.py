@@ -8,7 +8,7 @@ Created on Thu Apr 27 14:44:50 2023
 
 import logging
 import os
-from formatter import Row_Csv
+from formatter import Next_Action_Csv
 from parser_xml import MyHandler
 
 
@@ -56,7 +56,7 @@ class Filesystem:
             logging.debug(" ".join(["Successfull make: ", self.path_complete_file]))
         return self.path_complete_file
     
-    def file(self):
+    def next_actions_file(self):
         """write (updating, if it exists) the physical file in the hard disk"""
         report_name = "".join([ self.directory(), os.sep, self.csv.name() ]);
         if (os.path.exists(report_name)) :
@@ -64,16 +64,16 @@ class Filesystem:
         f = open(report_name, "a")
         row_list = self.csv.row()
         if not row_list:
-            f.write(" ".join( ["Every project","has no Next Action","\n"] ))
+            f.write(" ".join( ["No project","has Next Action","\n"] ))
         else:
             f.write(";".join ( ["Important","To finish before","Area","Project", "Goal", "Work To Do [%]","NextAction","Context", "Blocked by","\n"]) )
             for areas in row_list:
                 for project_next_Action in areas:
                     f.write("".join([(
-                        Row_Csv(project_next_Action).data()), "\n" ]))
+                        Next_Action_Csv(project_next_Action).data()), "\n" ]))
         f.close()
         
-    def console(self):
+    def next_actions_console(self):
            """
            write the data int the console
            """

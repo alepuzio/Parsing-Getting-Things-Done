@@ -26,7 +26,7 @@ class Main:
                        Directory( args[1] ).xml() 
                        )
                    #).console()
-                    ).file()
+                    ).next_actions_file()
         
     if __name__ == '__main__':
         """Run elaboration"""

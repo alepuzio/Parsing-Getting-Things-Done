@@ -145,8 +145,10 @@ class Goal:
         return res 
     
     
-class Row_Csv:
-    
+class Next_Action_Csv:
+    """
+    Class about a single row in the NExt Action file
+    """
     
     def __init__(self, new_action):
         self.action = new_action
