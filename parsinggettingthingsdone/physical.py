@@ -8,7 +8,7 @@ Created on Thu Apr 27 14:44:50 2023
 
 import logging
 import os
-from formatter import Next_Action_Csv
+from formatter import Next_Action_CSV
 from parser_xml import MyHandler
 
 
@@ -20,7 +20,7 @@ class Directory:
         self.complete_path = new_complete_path
     
     def xml(self):
-        """Return the list of XML files inside"""
+        """Return the list of the content of XML files"""
         projectList = []
         for file in os.listdir(self.complete_path):
             if file.endswith(".xml"):
@@ -55,22 +55,30 @@ class Filesystem:
             os.mkdir(self.path_complete_file)
             logging.debug(" ".join(["Successfull make: ", self.path_complete_file]))
         return self.path_complete_file
-    
-    def next_actions_file(self):
-        """write (updating, if it exists) the physical file in the hard disk"""
+
+    def file(self):
+        """
+        Create the file on the filesystem
+        """        
+        logging.debug("self.csv.name():"+self.csv.name())
         report_name = "".join([ self.directory(), os.sep, self.csv.name() ]);
         if (os.path.exists(report_name)) :
             os.remove(report_name)	
-        f = open(report_name, "a")
+        return report_name
+    
+    
+    def next_actions_file(self):
+        """write (updating, if it exists) the physical file in the hard disk"""
+        f = open(self.file(), "a")
         row_list = self.csv.row()
         if not row_list:
-            f.write(" ".join( ["No project","has Next Action","\n"] ))
+            f.write(" ".join( ["No project","has any Next Action","\n"] ))
         else:
-            f.write(";".join ( ["Important","To finish before","Area","Project", "Goal", "Work To Do [%]","NextAction","Context", "Blocked by","\n"]) )
+            f.write(";".join ( ["Area","Project", "Goal", "Work To Do [%]","NextAction","Context", "Blocked by","\n"]) )
             for areas in row_list:
                 for project_next_Action in areas:
                     f.write("".join([(
-                        Next_Action_Csv(project_next_Action).data()), "\n" ]))
+                        Next_Action_CSV(project_next_Action).data()), "\n" ]))
         f.close()
         
     def next_actions_console(self):
@@ -82,11 +90,29 @@ class Filesystem:
                logging.debug(" ".join( ["Every project","has no Next Action","\n"] ))
            else:
                counter = 0
-               logging.debug(";".join ( ["Important","To finish before","Area","Project", "Goal", "Work To Do [%]","NextAction","\n"]) )
+               logging.debug(";".join ( ["Project", "NextAction","Context", "Estimated Time","To finish before","Blocked by","\n"]) )
                for areas in row_list:
                    for project_next_Action in areas:
                        counter = counter +1
                        logging.debug("".join([ str(counter) ,">", (project_next_Action.data()), "\n" ]))
+        
+    def project_console(self):
+            """
+            write the data in the console
+            """
+            row_list = self.csv.row()
+            if not row_list:
+                logging.debug(" ".join( ["Every project","has no Next Action","\n"] ))
+            else:
+                counter = 0
+                logging.debug(";".join ( ["Area","Project", "Goal", "Work To Do [%]","NextAction","Importance","\n"]) )
+                for areas in row_list:
+                    for project_next_Action in areas:
+                        counter = counter +1
+                        logging.debug("".join([ str(counter) ,">", (project_next_Action.data()), "\n" ]))
+            
+              
+        
         
     def context(self):
          """

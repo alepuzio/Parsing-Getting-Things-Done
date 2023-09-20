@@ -48,10 +48,6 @@ class Project:
             numberNA = len(result)
             if (0 == numberNA ) :
                 result.append(Action( "This project has not any Action"))
-            #elif (1 < numberNA):
-             #   result.append(  Action (" ".join(['This project has ', str(numberNA) ,'Next Action: it has to be fixed']),1))
-            #else:
-             #   logging.debug("This project has 1 NA")
         if("" != self.due ):
             logging.debug("due:"
                           + self.start_formatted() > date.today().strftime('%Y-%m-%d')

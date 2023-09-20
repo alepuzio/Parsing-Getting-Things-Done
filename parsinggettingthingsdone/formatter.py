@@ -10,25 +10,29 @@ sys.path.insert(0, '../parsinggettingthingsdone')
 from datetime import datetime    
 import logging
 
-class One_CSV:
+class Next_Action_CSV:
     """ 
-    Class about one CSV file to write.
+    Class about the data of the CSV file to write.
     """
     def __init__(self, new_date_time_obj, new_list_data):
         self.date_time_obj = new_date_time_obj
         self.list_data_to_print = new_list_data
         
     def row(self):
-        """Return the built row"""
+        """
+        Return the built row
+        """
         return  [ x  for x in self.list_data_to_print ]
     
     def name(self):
-        """Return the name of the report file"""
-        return "-".join([self.date_time_obj.strftime("%Y-%m-%d"), "PROJECTS.csv"])
+        """
+        Return the name of the report file
+        """
+        return "-".join([self.date_time_obj.strftime("%Y-%m-%d"), "NEXT_ACTION.csv"])
     
     def sort(self):
         """
-        return the ordered rows in alphabetical criteria by
+        Return the ordered rows in alphabetical criteria by
         - area
         - name
         """
@@ -175,4 +179,35 @@ class Next_Action_Csv:
                               
                                 ] )
         logging.warn("Action.data:" + str(data_action) )
+        return data_action.replace("\r","").replace("\t","").replace("\n","")
+    
+class Project_Csv:
+    """
+    Class about a single row in the Project file
+    """
+    
+    def __init__(self, new_action):
+        self.action = new_action
+        
+    def data(self):
+        """Return the name with no \r, \t or \n"""
+        data_action = None
+        if("" != self.action.closed.replace(" ", "")):
+            data_action = " ".join([
+                "["
+                , self.action.closed 
+                , "]"
+                , self.action.name, "choose another NA"
+                ])
+        data_action = ";".join([
+                                Important(self.action.prj.important).mark()
+                                , Date(self.action.end).y_m_d()
+                                , self.action.prj.project_name()
+                                ,  Goal(self.action.prj.goal).string()
+                                , Progress(self.action.prj.list_actions).integer()
+                                , self.action.name
+                                , Depends(self.action.depends).list_comma()
+                              
+                                ] )
+        logging.warn("Project.data:" + str(data_action) )
         return data_action.replace("\r","").replace("\t","").replace("\n","")
