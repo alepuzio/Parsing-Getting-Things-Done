@@ -23,14 +23,14 @@ class Main:
         Filesystem( args[2], 
                    One_CSV (
                        datetime.now(), 
-                       Directory( args[1] ).xml() 
+                       Directory( args[1] ).xml_project() 
                        )
                    #).console()
-                    ).next_actions_file()
-        
+                   # ).next_actions_file()
+                     ).projects_console()
     if __name__ == '__main__':
         """Run elaboration"""
-        logging.basicConfig(level=logging.WARN)
+        logging.basicConfig(level=logging.DEBUG)
         logging.debug('Begin')
         logging.debug('ale'>'batman')
         

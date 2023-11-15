@@ -2,14 +2,12 @@
 from datetime import date
 import logging
 from formatter import ProjectName
-from formatter import Progress
-from formatter import Date
-from formatter import Goal
-from formatter import Important
 
+    
 class Project:
     """  Class about a Project,
     declared as a sequence of more steps direct to a goal.
+    This class has the list of Action
     """
     def __init__(self, new_name, new_important , new_closed, new_list_actions, 
                  new_start = '', new_depends = '', new_area = '',

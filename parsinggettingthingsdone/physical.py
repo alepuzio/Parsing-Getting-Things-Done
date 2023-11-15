@@ -9,8 +9,8 @@ Created on Thu Apr 27 14:44:50 2023
 import logging
 import os
 from formatter import Next_Action_Csv
+from parser_xml_project import MyHandlerProject
 from parser_xml import MyHandler
-
 
 class Directory:
     """ 
@@ -33,7 +33,20 @@ class Directory:
                     )
         return projectList
 
-    
+    def xml_project(self):
+        """Return the list of XML files inside"""
+        projectList = []
+        for file in os.listdir(self.complete_path):
+            logging.info(self.complete_path)
+            if file.endswith("projects.xml"):
+                projectList.append(
+                    MyHandlerProject().parse(
+                        os.path.join(
+                            self.complete_path, file
+                            )
+                        )
+                    )
+        return projectList    
 class Filesystem:
     """
     Class about the filesystem 
@@ -75,7 +88,7 @@ class Filesystem:
         
     def next_actions_console(self):
            """
-           write the data int the console
+           write the data in the console
            """
            row_list = self.csv.row()
            if not row_list:
@@ -87,7 +100,22 @@ class Filesystem:
                    for project_next_Action in areas:
                        counter = counter +1
                        logging.debug("".join([ str(counter) ,">", (project_next_Action.data()), "\n" ]))
-        
+  
+    def projects_console(self):
+           """
+           write the projects data in the console
+           """
+           row_list = self.csv.row()
+           if not row_list:
+               logging.debug("No project")
+           else:
+               counter = 0
+               logging.debug(";".join ( ["Important","To finish before","Area","Project", "Goal"]) )
+               for areas in row_list:
+                   for project_next in areas:
+                       counter = counter +1
+                       logging.debug("".join([ str(counter) ,">", str(project_next), "\n" ]))
+            
     def context(self):
          """
          write (updating, if it exists) 

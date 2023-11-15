@@ -5,11 +5,10 @@ import xml.sax
 
 sys.path.insert(0, '../parsinggettingthingsdone')
 
-from projects import Project
-from projects import Action
+from only_project import OnlyProject
 
 
-class MyHandler(xml.sax.handler.ContentHandler):
+class MyHandlerProject(xml.sax.handler.ContentHandler):
     """
         This class read, in SAX way, the single XML file where are the data of a project.
     """
@@ -18,19 +17,16 @@ class MyHandler(xml.sax.handler.ContentHandler):
         """Init method"""
         self.current_project = ""
         self._charBuffer = []
-        self.list_action = []
         self.list_project = []
-        self.activity = ""
         self.start_prj = ""
         self.closedPrj = ""
         self.closed = ""
-        self.context  = ""
         self.estimation = ""
         self.area = ""
         self.depends_prj = ""
         self.due_prj = ""
-        self.due_action = ""
         self.goal = ""
+        #self.list_project = []
         
     def _getCharacterData(self):
         """Read the character"""
@@ -45,10 +41,10 @@ class MyHandler(xml.sax.handler.ContentHandler):
         """
         start = 'area-'
         end = '.xml'
-        self.area = f[f.find(start) + len(start):f.rfind(end)]
-        logging.debug("nome area:" + self.area)
+        self.area = f[f.find(start)+len(start):f.rfind(end)]
+        logging.info("area:" + self.area )
         xml.sax.parse(f, self)
-        return  self.list_action 
+        return  self.list_project 
 
     def characters(self, data):
         """Read the characters"""
@@ -70,23 +66,17 @@ class MyHandler(xml.sax.handler.ContentHandler):
             self.depends_prj = attrs['depends'] if 'depends' in attrs else ''
             self.due_prj = attrs['due'] if 'due' in attrs else ''
             self.goal = attrs['goal'] if 'goal' in attrs else ''
-            self.prj =  Project(
+            self.prj =  OnlyProject(
                  self.current_project
                  , self.important
                  , self.closedProject
-                 , self.list_action
                  , self.start_prj
                  , self.depends_prj
                  , self.area
                  , self.due_prj
                  , self.goal
                  );
-        elif tag_name.isAction():
-            self.closed = attrs['closed'] if 'closed' in attrs else ''
-            self.context = attrs['context'] if 'context' in attrs else ''
-            self.estimation = attrs['estimation'] if 'estimation' in attrs else ''
-            self.depends = attrs['depends'] if 'depends' in attrs else ''
-            self.due_action = attrs['due'] if 'due' in attrs else ''
+            logging.debug("onlyProject: " + str(self.prj))
         else:
            logging.warn("")#.join(["Unkown startElement(", tagName ,")"]))
 
@@ -99,22 +89,13 @@ class MyHandler(xml.sax.handler.ContentHandler):
 
         tag_name = TagName(tagName)
         if tag_name.isProject() : 
-            self.prj = None
-        elif tag_name.isAction():
-          if (0 < len(self.activity.replace(" ", "")) and "" ==  self.closed.replace("", "" ) ):
-              self.list_action.append( Action(  self.activity 
-                             , self.prj                                           
-                             , self.closed
-                             , self.context
-                             , self.estimation
-                             , self.depends
-                             , self.due_action
-                             )
-                                  )
+          if (0 < len(self.activity.strip()) and "" ==  self.closed.strip() ):
+              self.list_project.append(self.prj)
+              logging.debug("progetti: " + str(self.list_project))
         elif tag_name.isEndFile():
-          logging.debug(" ")#.join(["chiudo projects:", str(self.list_project)]))
+          logging.debug(" ")
         else:
-            logging.warn("")#.join(["Unkown endElement(", tagName ,")"]))
+            logging.warn("")
 
 class TagName:
     """
@@ -124,12 +105,11 @@ class TagName:
     def __init__(self, new_tag_name):
         self.tag_name = new_tag_name
         
-    def isAction(self):
-        """Return true if the tag is an Action."""
-        return self.tag_name == 'action'
+  
     
     def isProject(self):
         """Return true if the tag is an Project."""
+        logging.debug("isProject:"+ self.tag_name)
         return self.tag_name == 'project'
     
         

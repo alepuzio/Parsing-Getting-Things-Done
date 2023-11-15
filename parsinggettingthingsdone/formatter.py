@@ -24,7 +24,7 @@ class One_CSV:
     
     def name(self):
         """Return the name of the report file"""
-        return "-".join([self.date_time_obj.strftime("%Y-%m-%d"), "PROJECTS.csv"])
+        return "-".join([self.date_time_obj.strftime("%Y-%m-%d"), "NEXT-ACTIONS.csv"])
     
     def sort(self):
         """
